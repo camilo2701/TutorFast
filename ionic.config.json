@@ -1,0 +1,7 @@
+{
+  "name": "TutorFast",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
