@@ -1,0 +1,101 @@
+<ion-content class="register-page">
+  <div class="top-bar">
+    <p>TutorFast</p>
+  </div>
+
+  <main class="register-container">
+    <section class="register-card">
+      <div class="icon-user">
+        <ion-icon name="person-outline"></ion-icon>
+      </div>
+
+      <h1>Crear Cuenta</h1>
+      <p class="subtitle">Únete a nuestra plataforma de tutorías</p>
+
+      <form (ngSubmit)="createAccount()">
+        <ion-label>Nombre</ion-label>
+        <ion-input
+          type="text"
+          placeholder="nombreEjemplo"
+          [(ngModel)]="user.name"
+          name="name">
+        </ion-input>
+
+        <ion-label>Apellido</ion-label>
+        <ion-input
+          type="text"
+          placeholder="apellidoEjemplo"
+          [(ngModel)]="user.lastname"
+          name="lastname">
+        </ion-input>
+
+        <ion-label>Correo electrónico</ion-label>
+        <ion-input
+          type="email"
+          placeholder="correoEjemplo@gmail.com"
+          [(ngModel)]="user.email"
+          name="email">
+        </ion-input>
+
+        <ion-label>Contraseña</ion-label>
+        <ion-input
+          type="password"
+          placeholder="contraseñaEjemplo"
+          [(ngModel)]="user.password"
+          name="password">
+        </ion-input>
+
+        <p class="role-title">Soy un:</p>
+
+        <div class="role-selector">
+          <button
+            type="button"
+            [class.active]="user.role === 'student'"
+            (click)="selectRole('student')">
+            Estudiante
+          </button>
+
+          <button
+            type="button"
+            [class.active]="user.role === 'tutor'"
+            (click)="selectRole('tutor')">
+            Tutor
+          </button>
+        </div>
+
+        <div class="terms">
+          <ion-checkbox [(ngModel)]="user.acceptTerms" name="terms"></ion-checkbox>
+          <span>
+            Acepto los <a href="#">Términos y condiciones</a>
+          </span>
+        </div>
+
+        <ion-button expand="block" type="submit" class="create-btn">
+          Crear cuenta
+        </ion-button>
+      </form>
+
+      <p class="login-link">
+        ¿Ya tienes una cuenta?
+        <a routerLink="/home">Inicia sesión</a>
+      </p>
+
+      <div class="social-divider"></div>
+
+      <div class="social-icons">
+        <ion-icon name="logo-google"></ion-icon>
+        <ion-icon name="logo-apple"></ion-icon>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>TutorFast 2026</p>
+
+    <div>
+      <a href="#">Términos y servicios</a>
+      <a href="#">Política de privacidad</a>
+      <a href="#">Centro de ayuda</a>
+    </div>
+  </footer>
+</ion-content>
