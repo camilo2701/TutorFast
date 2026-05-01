@@ -1,0 +1,44 @@
+.custom-toolbar {
+  --min-height: 42px;
+}
+
+/* FORCE TRUE CENTERING */
+.custom-title {
+  width: 100%;
+  text-align: center;
+  padding: 0;
+}
+
+.footer-toolbar {
+  padding: 12px 20px;
+}
+
+.footer-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+/* LEFT TEXT */
+.footer-title {
+  margin: 0;
+  font-size: 14px;
+}
+
+/* RIGHT LINKS */
+.footer-links {
+  display: flex;
+  gap: 24px; // spacing between links
+}
+
+.footer-links a {
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.page-container {
+  max-width: 1000px;   // slightly narrower = better for reading text
+  margin: 0 auto;
+  padding: 16px;
+}

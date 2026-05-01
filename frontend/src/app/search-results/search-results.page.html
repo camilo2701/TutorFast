@@ -1,0 +1,99 @@
+<ion-header>
+
+  <!-- TOP BAR -->
+  <ion-toolbar class="custom-toolbar" color="primary">
+
+    <!-- LEFT: HOME -->
+    <ion-buttons slot="start">
+      <ion-button name = "home" (click)="goHome()">
+        <ion-icon name="home-outline" ></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <!-- CENTER: TITLE -->
+    <ion-title class="custom-title">TutorFast</ion-title>
+
+    <!-- RIGHT: PROFILE -->
+    <ion-buttons slot="end">
+      <ion-button name = "profile" (click)="goProfile()">
+        <ion-icon name="person-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="search-results-content" [fullscreen]="true">
+
+  <!--  NO usar ion-title aquí -->
+  <h2 class="search-results-title">Resultados de búsqueda</h2>
+  
+  <div class = "search-controls">
+    
+    <ion-button class = "search-button" expand="block" (click)="goHome()">
+      Volver
+    </ion-button>
+  </div>
+  <!-- CARD CENTRADA -->
+
+  <div class = "results-container">
+    
+    <ion-card class="tutor-card" *ngFor="let tutor of filteredTutores" [ngClass]="{ 'premium-card': tutor.premium }" (click)="goTutoria()">
+      <ion-card-content class="tutor-card-content">
+
+        <!-- AVATAR -->
+        <div class="tutor-image">
+          <img src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+        </div>
+
+        <!-- INFO -->
+        <div class="tutor-data">
+
+          <ion-card-title class="nombre-tutor">
+            {{ tutor.nombre }}
+          </ion-card-title>
+
+          <p class="precio">
+            ${{ tutor.precio }} / hr
+          </p>
+          <p class="modalidad">
+            <span style="font-weight: bold;">Modalidad:</span> {{ tutor.modalidad }}
+          </p>
+          <p class="rating">
+            ⭐ {{ tutor.calificacion }} / 5
+          </p>
+          <p class="descripcion">
+            {{ tutor.descripcion }}
+          </p>
+
+        </div>
+
+      </ion-card-content>
+    </ion-card>
+    <p class="no-results" *ngIf="filteredTutores.length === 0">
+      No se encontraron resultados coincidentes.
+    </p>
+  </div>
+  
+</ion-content>
+  
+
+<ion-footer>
+  <ion-toolbar class="footer-toolbar" color="medium">
+
+    <div class="footer-container">
+
+      <!-- LEFT -->
+      <p class="footer-title">TutorFast 2026</p>
+
+      <!-- RIGHT -->
+      <div class="footer-links">
+        <a href="#">Términos y servicios</a>
+        <a href="#">Política de privacidad</a>
+        <a href="#">Centro de ayuda</a>
+      </div>
+
+    </div>
+
+  </ion-toolbar>
+</ion-footer>

@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
-import { RouterModule } from '@angular/router';
+import { RouterModule, ActivatedRoute } from '@angular/router';
 
 import { addIcons } from 'ionicons';
 import { homeOutline, personCircleOutline } from 'ionicons/icons';
+
+import { UserProfileService } from '../services/user-profile.service';
 
 @Component({
   selector: 'app-user-profile',
@@ -19,76 +21,51 @@ import { homeOutline, personCircleOutline } from 'ionicons/icons';
 })
 export class UserProfilePage implements OnInit {
 
-  constructor() {
+  user: any = {};
+  reviews: any[] = [];
+  tutorReviews: any[] = [];
+  tutorSessions: any[] = [];
+
+  constructor(
+    private route: ActivatedRoute,
+    private userProfileService: UserProfileService
+  ) {
     addIcons({
       'home-outline': homeOutline,
       'person-circle-outline': personCircleOutline,
     });
   }
 
-  user: any = {};
-  reviews: any[] = [];
-  tutorReviews: any[] = [];
-  tutorSessions: any[] = [];
-
   ngOnInit() {
-    this.loadUser();
+    const id = Number(this.route.snapshot.paramMap.get('id'));
+
+    if (id) {
+      this.userProfileService.getUserProfile(id).subscribe({
+        next: (data) => {
+          this.user = data.user;
+          this.reviews = data.reviews || [];
+          this.tutorSessions = data.tutorSessions || [];
+          this.tutorReviews = data.tutorReviews || [];
+        },
+        error: (err) => {
+          console.error('Error cargando perfil:', err);
+        }
+      });
+    }
   }
 
-  loadUser() {
-    // 🔹 Cambia role: 'student' | 'tutor'
-    this.user = {
-      name: 'Nombre',
-      lastname: 'Apellido',
-      role: 'tutor', // 👈 cambia a 'tutor' para probar
-      image: null
-    };
-
-    // 🔹 Reviews (estudiante)
-    this.reviews = [
-      {
-        tutor: 'Tutor ejemplo 1',
-        subject: 'Asignatura tutor 1',
-        comment: 'Ejemplo de review del estudiante',
-        rating: 5
+  loadUserProfile(id: number) {
+    this.userProfileService.getUserProfile(id).subscribe({
+      next: (data) => {
+        this.user = data.user;
+        this.reviews = data.reviews || [];
+        this.tutorSessions = data.tutorSessions || [];
+        this.tutorReviews = data.tutorReviews || [];
       },
-      {
-        tutor: 'Tutor ejemplo 2',
-        subject: 'Asignatura tutor 2',
-        comment: 'Ejemplo de review del estudiante',
-        rating: 3
-      },
-      {
-        tutor: 'Tutor ejemplo 3',
-        subject: 'Asignatura tutor 3',
-        comment: 'Ejemplo de review del estudiante',
-        rating: 5
-      },
-      {
-        tutor: 'Tutor ejemplo 4',
-        subject: 'Asignatura tutor 4',
-        comment: 'Ejemplo de review del estudiante',
-        rating: 5
-      },
-      {
-        tutor: 'Tutor ejemplo 5',
-        subject: 'Asignatura tutor 5',
-        comment: 'Ejemplo de review del estudiante',
-        rating: 5
+      error: (error) => {
+        console.error('Error cargando perfil:', error);
       }
-    ];
-
-    // 🔹 Tutor data
-    this.tutorSessions = [
-      { title: 'Tutoría 1' },
-      { title: 'Tutoría 2' },
-      { title: 'Tutoría 3' },
-      { title: 'Tutoría 4' },
-      { title: 'Tutoría 5' },
-      { title: 'Tutoría 6' },
-      { title: 'Tutoría 7' }
-    ];
-    this.tutorReviews = [...this.reviews]; // mock
+    });
   }
 
   getStarsArray(rating: number): string[] {
@@ -103,6 +80,8 @@ export class UserProfilePage implements OnInit {
   }
 
   getUserImage(): string {
-    return 'assets/icon/userpfp.jpg';
+    return this.user.image
+      ? this.user.image
+      : 'assets/icon/userpfp.jpg';
   }
 }

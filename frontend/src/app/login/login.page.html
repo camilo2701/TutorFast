@@ -1,0 +1,135 @@
+<ion-header>
+
+  <!-- TOP BAR -->
+  <ion-toolbar class="custom-toolbar" color="primary">
+
+    <!-- LEFT: HOME -->
+    <ion-buttons slot="start">
+      <ion-button routerLink="/home">
+        <ion-icon name="home-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <!-- CENTER: TITLE -->
+    <ion-title class="custom-title">TutorFast</ion-title>
+
+    <!-- RIGHT: PROFILE -->
+    <ion-buttons slot="end">
+      <ion-button name="profile" (click)="goProfile()">
+        <ion-icon name="person-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="login-page">
+  <main class="login-container">
+    <section class="login-card">
+      <div class="icon-user">
+        <ion-icon name="lock-closed-outline"></ion-icon>
+      </div>
+
+      <h1>Iniciar Sesión</h1>
+      <p class="subtitle">Accede a tu cuenta de TutorFast</p>
+
+      <form #loginForm="ngForm" (ngSubmit)="login()">
+
+        <ion-label>Correo electrónico</ion-label>
+        <ion-input
+          type="email"
+          placeholder="correoEjemplo@gmail.com"
+          [(ngModel)]="loginData.email"
+          name="email"
+          #emailCtrl="ngModel"
+          pattern="^[a-zA-Z0-9._%+-]+@(gmail\.com|mail\.pucv\.cl)$"
+          required>
+        </ion-input>
+        <div class="error-msg" *ngIf="emailCtrl.invalid && emailCtrl.touched">
+          El correo debe ser @gmail.com o @mail.pucv.cl
+        </div>
+
+        <ion-label>Contraseña</ion-label>
+        <ion-input
+          type="password"
+          placeholder="Ingresa tu contraseña"
+          [(ngModel)]="loginData.password"
+          name="password"
+          #passCtrl="ngModel"
+          required
+          minlength="6">
+        </ion-input>
+        <div class="error-msg" *ngIf="passCtrl.invalid && passCtrl.touched">
+          La contraseña debe tener mínimo 6 caracteres.
+        </div>
+
+        <p class="role-title">Ingresar como:</p>
+
+        <div class="role-selector">
+          <button
+            type="button"
+            [class.active]="loginData.role === 'student'"
+            (click)="selectRole('student')">
+            Estudiante
+          </button>
+
+          <button
+            type="button"
+            [class.active]="loginData.role === 'tutor'"
+            (click)="selectRole('tutor')">
+            Tutor
+          </button>
+        </div>
+
+        <div class="login-options">
+          <div class="remember">
+            <ion-checkbox [(ngModel)]="loginData.rememberMe" name="rememberMe"></ion-checkbox>
+            <span>Recordarme</span>
+          </div>
+
+          <a routerLink="/forgot-password">¿Olvidaste tu contraseña?</a>
+        </div>
+
+        <ion-button
+          expand="block"
+          type="submit"
+          class="login-btn"
+          [disabled]="loginForm.invalid">
+          Iniciar sesión
+        </ion-button>
+      </form>
+
+      <p class="register-link">
+        ¿No tienes una cuenta?
+        <a routerLink="/register">Crear cuenta</a>
+      </p>
+
+      <div class="social-divider"></div>
+
+      <div class="social-icons">
+        <ion-icon name="logo-google"></ion-icon>
+        <ion-icon name="logo-apple"></ion-icon>
+      </div>
+    </section>
+  </main>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar class="footer-toolbar" color="medium">
+
+    <div class="footer-container">
+
+      <!-- LEFT -->
+      <p class="footer-title">TutorFast 2026</p>
+
+      <!-- RIGHT -->
+      <div class="footer-links">
+        <a href="#">Términos y servicios</a>
+        <a href="#">Política de privacidad</a>
+        <a href="#">Centro de ayuda</a>
+      </div>
+
+    </div>
+
+  </ion-toolbar>
+</ion-footer>

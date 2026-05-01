@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../services/auth.service';
 
 import {
   IonButton,
@@ -68,7 +69,10 @@ export class RegisterPage {
     acceptTerms: false
   };
 
-  constructor() {
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {
     addIcons({
       personOutline,
       logoGoogle,
@@ -116,11 +120,31 @@ export class RegisterPage {
   }
 
   createAccount() {
-    if (!this.user.acceptTerms) {
-      alert('Debes aceptar los términos y condiciones.');
-      return;
-    }
+  if (!this.user.acceptTerms) {
+    alert('Debes aceptar los términos y condiciones.');
+    return;
+  }
 
-    console.log('Usuario registrado:', this.user);
+  const userData = {
+      nombre_real: `${this.user.name} ${this.user.lastname}`,
+      nombre_de_usuario: this.user.email.split('@')[0],
+      correo_electronico: this.user.email,
+      contrasena: this.user.password,
+      rol: this.user.role === 'student' ? 0 : 1,
+      rut: this.user.rut.replace(/\./g, '')
+    };
+
+    this.authService.register(userData).subscribe({
+      next: (response) => {
+        localStorage.setItem('token', response.token);
+        localStorage.setItem('user', JSON.stringify(response.user));
+
+        alert('Cuenta creada correctamente');
+        this.router.navigate(['/home']);
+      },
+      error: (error) => {
+        alert(error.error?.error || 'Error al crear la cuenta');
+      }
+    });
   }
 }

@@ -15,7 +15,7 @@
 
     <!-- RIGHT: PROFILE -->
     <ion-buttons slot="end">
-      <ion-button routerLink="/user-profile">
+      <ion-button (click)="goToProfile()">
         <ion-icon name="person-circle-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -86,9 +86,9 @@
 
       <!-- RIGHT -->
       <div class="footer-links">
-        <a href="#">Términos y servicios</a>
-        <a href="#">Política de privacidad</a>
-        <a href="#">Centro de ayuda</a>
+        <a routerLink="/register">Términos y servicios</a>
+        <a routerLink="/privacy-policy">Política de privacidad</a>
+        <a routerLink="/help-center">Centro de ayuda</a>
       </div>
 
     </div>

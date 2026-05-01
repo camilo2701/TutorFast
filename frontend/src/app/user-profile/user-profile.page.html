@@ -29,13 +29,20 @@
         <ion-img class="profile-img-container" [src]="getUserImage()"></ion-img>
 
         <h2>{{ user.name }} {{ user.lastname }}</h2>
-        <p>{{ user.role === 'student' ? 'Estudiante' : 'Tutor' }}</p>
+        <p>
+          {{
+            user.role === 'student' ? 'Estudiante' :
+            user.role === 'tutor' ? 'Tutor' :
+            user.role === 'admin' ? 'Administrador' :
+            'Desconocido'
+          }}
+        </p>
 
       </div>
     </div>
 
-    <!-- ESTUDIANTE -->
-    <div *ngIf="user.role === 'student'">
+    <!-- ESTUDIANTE y ADMIN-->
+    <div *ngIf="user.role === 'student' || user.role === 'admin'">
 
       <h3 class="section-title">Mis reviews</h3>
 

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
+import { Router } from '@angular/router';
 
 import { addIcons } from 'ionicons';
 import { homeOutline, personCircleOutline } from 'ionicons/icons';
@@ -23,7 +24,7 @@ export class HomePage implements OnInit {
 
   tutors: any[] = [];
 
-  constructor() {
+  constructor(private router: Router) {
     addIcons({
       'home-outline': homeOutline,
       'person-circle-outline': personCircleOutline,
@@ -34,6 +35,20 @@ export class HomePage implements OnInit {
 
   get hasTutors() {
     return this.tutors && this.tutors.length > 0;
+  }
+
+  goToProfile() {
+    const token = localStorage.getItem('token');
+    const user = localStorage.getItem('user');
+
+    if (!token || !user) {
+      this.router.navigate(['/register']);
+      return;
+    }
+
+    const parsedUser = JSON.parse(user);
+
+    this.router.navigate(['/user-profile', parsedUser.id_usuario]);
   }
 
 }
