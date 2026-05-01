@@ -1,0 +1,139 @@
+<ion-header>
+  <ion-toolbar class="custom-toolbar" color="primary">
+
+    <ion-buttons slot="start">
+      <ion-button routerLink="/home">
+        <ion-icon name="home-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title class="custom-title">TutorFast</ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button routerLink="/user-profile">
+        <ion-icon name="person-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content color="secondary">
+
+  <div class="profile-container">
+
+    <!-- PROFILE -->
+    <div class="profile-header">
+      <div class="profile-card">
+
+        <ion-img class="profile-img-container" [src]="getUserImage()"></ion-img>
+
+        <h2>{{ user.name }} {{ user.lastname }}</h2>
+        <p>{{ user.role === 'student' ? 'Estudiante' : 'Tutor' }}</p>
+
+      </div>
+    </div>
+
+    <!-- ESTUDIANTE -->
+    <div *ngIf="user.role === 'student'">
+
+      <h3 class="section-title">Mis reviews</h3>
+
+      <div class="scroll-section">
+
+        <div *ngFor="let review of reviews" class="review-card">
+
+          <div class="review-header">
+            <div>
+              <strong>{{ review.tutor }}</strong>
+              <p>{{ review.subject }}</p>
+            </div>
+
+            <div>
+              <ion-icon
+                *ngFor="let star of getStarsArray(review.rating)"
+                [name]="star"
+                color="warning">
+              </ion-icon>
+            </div>
+          </div>
+
+          <p class="review-text">"{{ review.comment }}"</p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- TUTOR -->
+    <div *ngIf="user.role === 'tutor'">
+
+      <!-- MIS TUTORÍAS -->
+      <h3 class="section-title">Mis tutorías</h3>
+
+      <div class="scroll-section">
+
+        <div
+          *ngFor="let tutoring of tutorSessions"
+          class="tutoring-card"
+          role="button"
+          tabindex="0">
+
+          <strong>{{ tutoring.title }}</strong>
+
+        </div>
+
+      </div>
+
+      <!-- REVIEWS DEL TUTOR -->
+      <h3 class="section-title">Reviews sobre el tutor</h3>
+
+      <div class="scroll-section">
+
+        <div *ngFor="let review of tutorReviews" class="review-card">
+
+          <div class="review-header">
+            <div>
+              <strong>{{ review.tutor }}</strong>
+              <p>{{ review.subject }}</p>
+            </div>
+
+            <div>
+              <ion-icon
+                *ngFor="let star of getStarsArray(review.rating)"
+                [name]="star"
+                color="warning">
+              </ion-icon>
+            </div>
+          </div>
+
+          <p class="review-text">"{{ review.comment }}"</p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar class="footer-toolbar" color="medium">
+
+    <div class="footer-container">
+
+      <p class="footer-title">TutorFast 2026</p>
+
+      <div class="footer-links">
+        <a href="#">Términos y servicios</a>
+        <a href="#">Política de privacidad</a>
+        <a href="#">Centro de ayuda</a>
+      </div>
+
+    </div>
+
+  </ion-toolbar>
+</ion-footer>

@@ -1,0 +1,133 @@
+.profile-container {
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+}
+
+.profile-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.profile-img-container {
+  width: 120px;
+  height: 120px;
+  margin: auto;
+  border-radius: 50%;
+  overflow: hidden; // 🔥 clave para el círculo
+}
+
+.profile-img-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.section-title {
+  margin-top: 30px;
+  margin-bottom: 10px;
+  font-weight: bold;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 5px;
+}
+
+.review-card {
+  background: white;
+  padding: 16px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.review-text {
+  margin-top: 10px;
+  color: #555;
+}
+
+.custom-toolbar {
+  --min-height: 42px;
+}
+
+.custom-title {
+  width: 100%;
+  text-align: center;
+  padding: 0;
+}
+
+.footer-toolbar {
+  padding: 12px 20px;
+}
+
+.footer-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+/* LEFT TEXT */
+.footer-title {
+  margin: 0;
+  font-size: 14px;
+}
+
+/* RIGHT LINKS */
+.footer-links {
+  display: flex;
+  gap: 24px; // spacing between links
+}
+
+.footer-links a {
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.profile-header {
+  display: flex;
+  justify-content: center; // 👈 centra el cuadro
+  margin-bottom: 30px;
+}
+
+.profile-card {
+  background: white;
+  padding: 25px 30px;
+  border-radius: 12px;
+  text-align: center;
+  width: 300px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.tutoring-card {
+  background: white;
+  padding: 18px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.tutoring-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+.scroll-section {
+  max-height: 300px; // cambia este valor si quieres más o menos espacio
+  overflow-y: auto;
+  padding-right: 8px;
+  margin-bottom: 25px;
+}
+
+.scroll-section::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scroll-section::-webkit-scrollbar-thumb {
+  background: #b0b0b0;
+  border-radius: 10px;
+}
