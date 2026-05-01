@@ -1,33 +1,71 @@
 .register-page {
   --background: #d0d0d0;
   font-family: Arial, sans-serif;
-  --overflow: hidden;
 }
 
-.top-bar {
-  width: 100%;
-  height: 42px;
-  background-color: #1a2b45;
-  color: #f2f2f2;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+ion-toolbar.top-bar {
+  --background: #1a2b45;
+  --color: #f2f2f2;
+  --min-height: 42px;
+  height: 42px !important;
+  max-height: 42px !important;
+  min-height: 42px !important;
+  overflow: hidden;
+  white-space: nowrap;
 
   p {
     margin: 0;
     font-size: 16px;
     font-weight: 500;
+    text-align: center;
   }
 }
 
+.custom-toolbar {
+  --min-height: 42px;
+}
+
+.custom-title {
+  width: 100%;
+  text-align: center;
+  padding: 0;
+}
+
+.footer-toolbar {
+  padding: 12px 20px;
+}
+
+.footer-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+/* LEFT TEXT */
+.footer-title {
+  margin: 0;
+  font-size: 14px;
+}
+
+/* RIGHT LINKS */
+.footer-links {
+  display: flex;
+  gap: 24px; // spacing between links
+}
+
+.footer-links a {
+  text-decoration: none;
+  font-size: 14px;
+}
+
 .register-container {
-  height: calc(100vh - 42px - 78px);
+  min-height: calc(100vh - 42px - 78px);
   background-color: #d0d0d0;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 16px;
-  overflow: hidden;
 }
 
 .register-card {
@@ -178,7 +216,9 @@ ion-input {
 }
 
 .footer {
-  height: 78px;
+  height: 78px !important;
+  min-height: 78px !important;
+  max-height: 78px !important;
   background-color: #d0d0d0;
   border-top: 1px solid #1a2b45;
   display: flex;
@@ -186,6 +226,8 @@ ion-input {
   align-items: center;
   padding: 0 34px;
   color: #1a2b45;
+  overflow: hidden;
+  white-space: nowrap;
 
   p {
     margin: 0;
@@ -208,22 +250,27 @@ ion-input {
   }
 }
 
+.error-msg {
+  color: #dc2626;
+  font-size: 12px;
+  margin-top: 4px;
+  padding-left: 14px;
+}
+
 @media (max-width: 700px) {
   .register-container {
-    height: auto;
     padding: 20px 10px;
   }
 
   .footer {
-    height: auto;
-    flex-direction: column;
-    gap: 12px;
-    padding: 18px;
-
+    padding: 0 10px;
+    
     div {
-      flex-direction: column;
-      gap: 8px;
-      text-align: center;
+      gap: 15px;
+    }
+
+    p, a {
+      font-size: 12px;
     }
   }
 

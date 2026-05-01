@@ -1,0 +1,147 @@
+<ion-header>
+
+  <!-- TOP BAR -->
+  <ion-toolbar class="custom-toolbar" color="primary">
+
+    <!-- LEFT: HOME -->
+    <ion-buttons slot="start">
+      <ion-button name = "home" (click)="goHome()">
+        <ion-icon name="home-outline" ></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <!-- CENTER: TITLE -->
+    <ion-title class="custom-title">TutorFast</ion-title>
+
+    <!-- RIGHT: PROFILE -->
+    <ion-buttons slot="end">
+      <ion-button name = "profile" (click)="goProfile()">
+        <ion-icon name="person-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class = "create-tutoring-ad-content">
+  <div>
+    <ion-card class = "create-tutoring-ad-card">
+      <ion-card-header class = "ion-card-tittle">
+        <ion-card-title class = "tittle-card">Crear Anuncio de Tutoría</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content class = "card-content">
+        <form>
+
+          <ion-grid>
+
+            <!-- FILA 1: PRECIO | VACÍO -->
+            <ion-row>
+              <ion-col size="6">
+                <ion-item>
+                  <ion-label position="stacked">Precio/hr</ion-label>
+                  <ion-input type="text" placeholder="Ej: 15000" [(ngModel)]="form.price" name="price"></ion-input>
+                </ion-item>
+              </ion-col>
+
+              <ion-col size="6">
+                <!-- vacío intencional -->
+              </ion-col>
+            </ion-row>
+
+            <!-- FILA 2: CARRERA | ASIGNATURA -->
+            <ion-row>
+              <ion-col size="6">
+                <ion-item>
+                  <ion-label position="stacked">Carrera</ion-label>
+                  <ion-input type="text" placeholder="Ej: Ingeniería en Informática" [(ngModel)]="form.career" name="career"></ion-input>
+                </ion-item>
+              </ion-col>
+
+              <ion-col size="6">
+                <ion-item>
+                  <ion-label position="stacked">Asignatura</ion-label>
+                  <ion-input type="text" placeholder = "Ej: Cálculo Diferencial" [(ngModel)]="form.subject" name="subject"></ion-input>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+
+            <!-- DESCRIPCIÓN -->
+            <ion-row>
+              <ion-col size="12">
+                <ion-item class="description-item">
+                  <ion-label position="stacked">Descripción</ion-label>
+                  <ion-textarea rows="4" placeholder="Describe tu anuncio..." [(ngModel)]="form.description" name="description"></ion-textarea>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+
+          </ion-grid>
+
+          <!-- SUBIR IMAGEN -->
+          <ion-row>
+            <ion-col size="12">
+              <div class="upload-container" (click)="openFileSelector(fileInput)">
+                <p>Arrastra una imagen aquí o haz clic para subir</p>
+                <input #fileInput type="file" accept="image/*" (change)="onFileSelected($event)" />
+              </div>
+            </ion-col>
+          </ion-row>
+
+          <!-- TOGGLE POTENCIAR -->
+          <ion-row class="boost-row">
+            <ion-col size="6" class="boost-label">
+              <ion-label>Potenciar anuncio</ion-label>
+            </ion-col>
+
+            <ion-col size="6" class="boost-toggle">
+              <ion-toggle [(ngModel)]="form.boost" name="boost"></ion-toggle>
+            </ion-col>
+          </ion-row>
+
+          <!-- DESCRIPCIÓN DEL TOGGLE -->
+          <ion-row>
+            <ion-col size="12">
+              <p class="boost-description">
+                Potencia la visibilidad del anuncio para los estudiantes
+              </p>
+            </ion-col>
+          </ion-row>
+
+          <div class="submit-button-container">
+          <ion-button class ="publicar-boton"expand="block" (click)="onSubmit()">Publicar</ion-button>
+        </div>
+
+        <div class="cancel-button-container">
+          <ion-button class="cancelar-boton" expand="block" fill="outline" (click)="onCancel()">
+            Cancelar
+          </ion-button>
+        </div>
+
+        </form>
+      </ion-card-content>
+
+    </ion-card>
+  </div>
+  
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar class="footer-toolbar" color="medium">
+
+    <div class="footer-container">
+
+      <!-- LEFT -->
+      <p class="footer-title">TutorFast 2026</p>
+
+      <!-- RIGHT -->
+      <div class="footer-links">
+        <a href="#">Términos y servicios</a>
+        <a href="#">Política de privacidad</a>
+        <a href="#">Centro de ayuda</a>
+      </div>
+
+    </div>
+
+  </ion-toolbar>
+</ion-footer>

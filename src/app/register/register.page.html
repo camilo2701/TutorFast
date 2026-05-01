@@ -1,8 +1,29 @@
-<ion-content class="register-page">
-  <div class="top-bar">
-    <p>TutorFast</p>
-  </div>
+<ion-header>
 
+  <!-- TOP BAR -->
+  <ion-toolbar class="custom-toolbar" color="primary">
+
+    <!-- LEFT: HOME -->
+    <ion-buttons slot="start">
+      <ion-button name = "home" (click)="goHome()">
+        <ion-icon name="home-outline" ></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <!-- CENTER: TITLE -->
+    <ion-title class="custom-title">TutorFast</ion-title>
+
+    <!-- RIGHT: PROFILE -->
+    <ion-buttons slot="end">
+      <ion-button name = "profile" (click)="goProfile()">
+        <ion-icon name="person-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="register-page">
   <main class="register-container">
     <section class="register-card">
       <div class="icon-user">
@@ -13,6 +34,22 @@
       <p class="subtitle">Únete a nuestra plataforma de tutorías</p>
 
       <form (ngSubmit)="createAccount()">
+        <ion-label>RUT</ion-label>
+        <ion-input
+          type="text"
+          placeholder="12.345.678-K"
+          [ngModel]="user.rut"
+          (ngModelChange)="onRutChange($event)"
+          name="rut"
+          #rutCtrl="ngModel"
+          maxlength="12"
+          pattern="^\d{1,2}\.\d{3}\.\d{3}-[0-9Kk]$"
+          required>
+        </ion-input>
+        <div class="error-msg" *ngIf="rutCtrl.invalid && rutCtrl.touched">
+          Formato incorrecto. Ej: 12.345.678-K
+        </div>
+
         <ion-label>Nombre</ion-label>
         <ion-input
           type="text"
@@ -34,16 +71,28 @@
           type="email"
           placeholder="correoEjemplo@gmail.com"
           [(ngModel)]="user.email"
-          name="email">
+          name="email"
+          #emailCtrl="ngModel"
+          pattern="^[a-zA-Z0-9._%+-]+@(gmail\.com|mail\.pucv\.cl)$"
+          required>
         </ion-input>
+        <div class="error-msg" *ngIf="emailCtrl.invalid && emailCtrl.touched">
+          El correo debe ser @gmail.com o @mail.pucv.cl
+        </div>
 
         <ion-label>Contraseña</ion-label>
         <ion-input
           type="password"
           placeholder="contraseñaEjemplo"
           [(ngModel)]="user.password"
-          name="password">
+          name="password"
+          #passCtrl="ngModel"
+          pattern="^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{6,}$"
+          required>
         </ion-input>
+        <div class="error-msg" *ngIf="passCtrl.invalid && passCtrl.touched">
+          Debe ser alfanumérica, tener mín. 1 mayúscula y 1 carácter especial.
+        </div>
 
         <p class="role-title">Soy un:</p>
 
@@ -88,14 +137,24 @@
       </div>
     </section>
   </main>
-
-  <footer class="footer">
-    <p>TutorFast 2026</p>
-
-    <div>
-      <a href="#">Términos y servicios</a>
-      <a href="#">Política de privacidad</a>
-      <a href="#">Centro de ayuda</a>
-    </div>
-  </footer>
 </ion-content>
+
+<ion-footer>
+  <ion-toolbar class="footer-toolbar" color="medium">
+
+    <div class="footer-container">
+
+      <!-- LEFT -->
+      <p class="footer-title">TutorFast 2026</p>
+
+      <!-- RIGHT -->
+      <div class="footer-links">
+        <a href="#">Términos y servicios</a>
+        <a href="#">Política de privacidad</a>
+        <a href="#">Centro de ayuda</a>
+      </div>
+
+    </div>
+
+  </ion-toolbar>
+</ion-footer>

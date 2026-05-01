@@ -9,19 +9,6 @@
   padding: 0;
 }
 
-/* SEARCH BAR ROW */
-.search-toolbar {
-  padding: 6px 0;
-}
-
-/* REMOVE EXTRA INTERNAL SPACING */
-ion-searchbar {
-  --border-radius: 20px;
-  --box-shadow: none;
-  height: 36px;
-  padding: 0;
-}
-
 /* FIX ICON ALIGNMENT */
 .profile-col {
   display: flex;
@@ -32,47 +19,6 @@ ion-searchbar {
 /* REMOVE DEFAULT BUTTON PADDING OFFSET */
 .profile-col ion-button {
   margin: 0;
-}
-
-/* CENTER EMPTY STATE */
-.empty-container {
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.empty-card {
-  width: 400px;
-  text-align: center;
-  font-size: 16px;
-  padding: 20px;
-}
-
-/* GRID */
-.grid-container {
-  padding: 16px;
-}
-
-/* TUTOR CARD */
-.tutor-card {
-  border-radius: 12px;
-}
-
-/* FAKE IMAGE */
-.image-placeholder {
-  width: 100%;
-  height: 120px;
-  border-radius: 8px;
-}
-
-/* TEXT */
-.price {
-  font-weight: bold;
-}
-
-.desc {
-  font-size: 14px;
 }
 
 .footer-toolbar {
@@ -101,4 +47,50 @@ ion-searchbar {
 .footer-links a {
   text-decoration: none;
   font-size: 14px;
+}
+
+
+ion-card {
+  border-radius: 12px;
+}
+
+/* Image styling */
+ion-img {
+  width: 100%;
+  height: 440px;
+  object-fit: cover;
+}
+
+/* Price */
+.price {
+  color: var(--ion-color-success);
+  font-weight: bold;
+  font-size: 1.4rem;
+
+  span {
+    font-size: 0.9rem;
+    color: var(--ion-color-medium);
+  }
+}
+
+/* Stars spacing */
+ion-icon {
+  margin-right: 2px;
+  font-size: 18px;
+}
+
+/* Review spacing */
+ion-item {
+  --padding-start: 0;
+}
+
+/* Avatar tweak */
+ion-avatar img {
+  object-fit: cover;
+}
+
+.page-container {
+  max-width: 1000px;   // controls how wide your content is
+  margin: 0 auto;      // centers it horizontally
+  padding: 0 16px;     // small breathing space on mobile
 }

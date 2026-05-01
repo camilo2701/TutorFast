@@ -1,20 +1,97 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
+<ion-header>
+
+  <!-- TOP BAR -->
+  <ion-toolbar class="custom-toolbar" color="primary">
+
+    <!-- LEFT: HOME -->
+    <ion-buttons slot="start">
+      <ion-button [routerLink]="['/home']">
+        <ion-icon name="home-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <!-- CENTER: TITLE -->
+    <ion-title class="custom-title">TutorFast</ion-title>
+
+    <!-- RIGHT: PROFILE -->
+    <ion-buttons slot="end">
+      <ion-button>
+        <ion-icon name="person-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
   </ion-toolbar>
+
+  <!-- SEARCH BAR -->
+  <ion-toolbar class="search-toolbar" color="secondary">
+    <ion-grid>
+      <ion-row class="ion-align-items-center">
+        <ion-col size="12" size-md="6" offset-md="3">
+          <ion-searchbar
+            placeholder="Buscar asignaturas o tutores"
+            show-clear-button="focus"
+            color="medium">
+          </ion-searchbar>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+<ion-content color="medium">
+  <div *ngIf="!hasTutors" class="empty-container">
+    <ion-card class="empty-card" color="medium-shade">
+      <ion-card-content>
+        No hay tutores disponibles de momento. Intenta más tarde
+      </ion-card-content>
+    </ion-card>
   </div>
+
+  <div *ngIf="hasTutors" class="grid-container">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12" size-md="6" size-lg="3" *ngFor="let tutor of tutors">
+          <ion-card class="tutor-card">
+
+            <div class="image-placeholder"></div>
+
+            <ion-card-header>
+              <ion-card-title>{{ tutor.name }}</ion-card-title>
+            </ion-card-header>
+
+            <ion-card-content>
+              <p class="price">${{ tutor.price }} / hora</p>
+              <p class="desc">{{ tutor.description }}</p>
+
+              <ion-button expand="block">
+                Ver Perfil
+              </ion-button>
+            </ion-card-content>
+
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div> 
 </ion-content>
+
+<ion-footer>
+  <ion-toolbar class="footer-toolbar" color="medium">
+
+    <div class="footer-container">
+
+      <!-- LEFT -->
+      <p class="footer-title">TutorFast 2026</p>
+
+      <!-- RIGHT -->
+      <div class="footer-links">
+        <a href="#">Términos y servicios</a>
+        <a href="#">Política de privacidad</a>
+        <a href="#">Centro de ayuda</a>
+      </div>
+
+    </div>
+
+  </ion-toolbar>
+</ion-footer>

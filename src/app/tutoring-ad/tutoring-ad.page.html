@@ -1,0 +1,197 @@
+<ion-header>
+
+  <!-- TOP BAR -->
+  <ion-toolbar class="custom-toolbar" color="primary">
+
+    <!-- LEFT: HOME -->
+    <ion-buttons slot="start">
+      <ion-button>
+        <ion-icon name="home-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <!-- CENTER: TITLE -->
+    <ion-title class="custom-title">TutorFast</ion-title>
+
+    <!-- RIGHT: PROFILE -->
+    <ion-buttons slot="end">
+      <ion-button>
+        <ion-icon name="person-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content color="secondary">
+
+  <div class="page-container"> <!-- ✅ ADD THIS -->
+
+    <ion-grid>
+      <ion-row>
+
+        <!-- IMAGE -->
+        <ion-col size="12" size-md="7">
+          <ion-card mode="ios" color="light">
+            <ion-img [src]="getTeacherImage()"></ion-img>
+          </ion-card>
+        </ion-col>
+
+        <!-- INFO -->
+        <ion-col size="12" size-md="5">
+
+          <ion-card mode="ios" color="light">
+            <ion-card-content>
+
+              <ion-item lines="none" color="light">
+                <ion-avatar slot="start">
+                  <img [src]="getTeacherImage()" />
+                </ion-avatar>
+
+                <ion-label>
+                  <ion-text color="primary">
+                    <h2>{{ tutor.name }} {{ tutor.lastname }}</h2>
+                    <p>{{ tutor.profession }}</p>
+                  </ion-text>
+                </ion-label>
+              </ion-item>
+
+              <ion-list lines="none">
+                <ion-item *ngFor="let subject of tutor.subjects" lines="none" color="light">
+                  <ion-label>
+                    <ion-text color="primary">{{ subject }}</ion-text>
+                  </ion-label>
+                </ion-item>
+              </ion-list>
+
+            </ion-card-content>
+          </ion-card>
+
+          <!-- PRICE -->
+          <ion-card mode="ios" color="light">
+            <ion-card-content>
+
+              <h2 class="price">
+                {{ tutor.price | currency:'CLP':'symbol':'1.0-0' }}
+                <span>/ hora</span>
+              </h2>
+
+              <ion-button expand="block" color="tertiary">
+                <ion-label color="light">
+                  CONTACTAR TUTOR
+                </ion-label>
+              </ion-button>
+
+            </ion-card-content>
+          </ion-card>
+
+          <!-- RATING -->
+          <ion-card mode="ios" color="light">
+            <ion-card-content>
+
+              <ion-row class="ion-align-items-center">
+                <ion-col size="auto">
+                  <ion-icon 
+                    *ngFor="let star of stars" 
+                    [name]="star"
+                    color="warning">
+                  </ion-icon>
+                </ion-col>
+
+                <ion-col>
+                  <ion-text color="primary">
+                    ({{ reviews.length }} reviews)
+                  </ion-text>
+                </ion-col>
+              </ion-row>
+
+            </ion-card-content>
+          </ion-card>
+
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <!-- DESCRIPTION -->
+    <ion-card mode="ios" color="light">
+      <ion-card-content>
+        <ion-text color="primary">
+          {{ tutor.description }}
+        </ion-text>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- REVIEWS -->
+    <ion-card mode="ios" color="light">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-text color="primary">Reviews</ion-text>
+        </ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+
+        <ion-list *ngIf="reviews.length > 0; else noReviews" lines="none">
+
+          <ion-item *ngFor="let review of reviews" lines="none" color="light">
+            
+            <ion-label>
+
+              <ion-text color="primary">
+                <h2>{{ review.student }}</h2>
+              </ion-text>
+
+              <p>
+                <ion-icon 
+                  *ngFor="let star of getStarsArray(review.rating)" 
+                  [name]="star"
+                  color="warning">
+                </ion-icon>
+              </p>
+
+              <ion-text color="primary">
+                <p>{{ review.comment }}</p>
+              </ion-text>
+
+            </ion-label>
+
+            <ion-note slot="end" color="medium">
+              {{ review.date }}
+            </ion-note>
+
+          </ion-item>
+
+        </ion-list>
+
+        <ng-template #noReviews>
+          <ion-text color="medium">
+            Este tutor aún no tiene reviews.
+          </ion-text>
+        </ng-template>
+
+      </ion-card-content>
+    </ion-card>
+
+  </div> <!-- ✅ CLOSE HERE -->
+
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar class="footer-toolbar" color="medium">
+
+    <div class="footer-container">
+
+      <!-- LEFT -->
+      <p class="footer-title">TutorFast 2026</p>
+
+      <!-- RIGHT -->
+      <div class="footer-links">
+        <a href="#">Términos y servicios</a>
+        <a href="#">Política de privacidad</a>
+        <a href="#">Centro de ayuda</a>
+      </div>
+
+    </div>
+
+  </ion-toolbar>
+</ion-footer>
