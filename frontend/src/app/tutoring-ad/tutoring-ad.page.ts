@@ -2,10 +2,40 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 import { addIcons } from 'ionicons';
-import { homeOutline, personCircleOutline } from 'ionicons/icons';
+import { 
+  homeOutline, 
+  personCircleOutline, 
+  cardOutline, 
+  businessOutline,
+  logInOutline, 
+  logOutOutline, 
+  personOutline, 
+  gridOutline,
+  star, 
+  starHalf, 
+  starOutline 
+} from 'ionicons/icons';
+
+interface Tutor {
+  title: string;
+  name: string;
+  lastname: string;
+  profession: string;
+  subjects: string[];
+  price: number;
+  description: string;
+  image: string | null;
+}
+
+interface Review {
+  student: string;
+  rating: number; // 1 a 5 entero
+  comment: string;
+  date: string;
+}
 
 @Component({
   selector: 'app-tutoring-ad',
@@ -19,75 +49,195 @@ import { homeOutline, personCircleOutline } from 'ionicons/icons';
     RouterModule,
   ]
 })
+
 export class TutoringAdPage implements OnInit {
 
-  constructor() { 
+  isLoggedIn: boolean = false;
+  isPopoverOpen = false;
+  popoverEvent: Event | null = null;
+
+  constructor(private router: Router) { 
     addIcons({
       'home-outline': homeOutline,
       'person-circle-outline': personCircleOutline,
+      'card-outline': cardOutline,
+      'business-outline': businessOutline,
+      'log-in-outline': logInOutline,
+      'log-out-outline': logOutOutline,
+      'person-outline': personOutline,
+      'grid-outline': gridOutline,
+      'star': star,
+      'star-half': starHalf,
+      'star-outline': starOutline
     });
   }
 
-  tutor: any = {};
-  reviews: any[] = [];
+  tutor: Tutor = {} as Tutor;
+  reviews: Review[] = [];
   stars: string[] = [];
+  averageRating: string = '0.0';
+
+  isBookingOpen = false;
+  selectedDate: string = '';
+  paymentMethod: string = 'credit';
 
   ngOnInit() {
-    this.loadTutor();
-    this.calculateAverageStars();
+    this.checkSession();
   }
-    // 🔹 Mock data (replace with API later)
+
+  checkSession() {
+    const token = localStorage.getItem('token');
+    const user = localStorage.getItem('user');
+
+    this.isLoggedIn = !!token && !!user;
+  }
+
+  openPopover(event: Event) {
+    this.checkSession();
+    this.popoverEvent = event;
+    this.isPopoverOpen = true;
+  }
+
+  closePopover() {
+    this.isPopoverOpen = false;
+    this.popoverEvent = null;
+  }
+
+  goToLogin() {
+    this.closePopover();
+
+    setTimeout(() => {
+      this.router.navigate(['/login']);
+    }, 100);
+  }
+
+  goToProfile() {
+    const user = localStorage.getItem('user');
+
+    this.closePopover();
+
+    setTimeout(() => {
+      if (!user) {
+        this.router.navigate(['/login']);
+        return;
+      }
+
+      const parsedUser = JSON.parse(user);
+      this.router.navigate(['/user-profile', parsedUser.id_usuario]);
+    }, 100);
+  }
+
+  goToDashboard() {
+    this.closePopover();
+
+    setTimeout(() => {
+      this.router.navigate(['/dashboard']);
+    }, 100);
+  }
+
+  logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    this.isLoggedIn = false;
+
+    this.closePopover();
+
+    setTimeout(() => {
+      this.router.navigate(['/login']);
+    }, 100);
+  }
+
   loadTutor() {
     this.tutor = {
+      title: 'Clases de Matemáticas Personalizadas', 
       name: 'Nombre',
       lastname: 'Apellido',
-      profession: 'Profesor de Matemáticas',
+      profession: 'Tutor',
       subjects: ['Álgebra', 'Cálculo'],
       price: 15000,
-      description: 'Ejemplo de descripción de un tutor',
-      image: null // try with URL later
+      description: 'Aprende matemáticas de forma clara y práctica.',
+      image: null
     };
 
     this.reviews = [
       { student: 'Alumno 1', rating: 5, comment: 'Muy buen profe', date: 'hace 2 días' },
-      { student: 'Alumno 2', rating: 4, comment: 'Explica bien', date: 'hace 1 semana' }
+      { student: 'Alumno 2', rating: 2, comment: 'Explica como el pico', date: 'hace 1 semana' }
     ];
   }
 
-  // 🔹 1. Average rating → stars
+  /* 🔥 PROMEDIO + REDONDEO A 0.5 */
   calculateAverageStars() {
     if (this.reviews.length === 0) {
       this.stars = Array(5).fill('star-outline');
+      this.averageRating = '0.0';
       return;
     }
 
     const avg = this.reviews.reduce((sum, r) => sum + r.rating, 0) / this.reviews.length;
 
-    this.stars = this.getStarsArray(avg);
+    // 🔹 Guardamos valor con 1 decimal (visual)
+    this.averageRating = avg.toFixed(1);
+
+    // 🔹 Redondeo a 0.5 para estrellas
+    const rounded = Math.round(avg * 2) / 2;
+
+    this.stars = this.generateStars(rounded);
+  }
+  /* 🔥 GENERADOR CORRECTO */
+  generateStars(rating: number): string[] {
+    const stars: string[] = [];
+
+    const fullStars = Math.floor(rating);
+    const hasHalf = rating % 1 !== 0;
+
+    for (let i = 0; i < fullStars; i++) {
+      stars.push('star');
+    }
+
+    if (hasHalf) {
+      stars.push('star-half');
+    }
+
+    while (stars.length < 5) {
+      stars.push('star-outline');
+    }
+
+    return stars;
   }
 
-  // 🔹 Star generator (reusable)
-  getStarsArray(rating: number): string[] {
-    const stars = [];
+  /* ⭐ ESTRELLAS PARA REVIEW (ENTERO 1–5, SIN HALF) */
+  getReviewStars(rating: number): string[] {
+    const stars: string[] = [];
 
     for (let i = 1; i <= 5; i++) {
-      if (rating >= i) {
-        stars.push('star'); // full
-      } else if (rating >= i - 0.5) {
-        stars.push('star-half'); // half (optional)
+      if (i <= rating) {
+        stars.push('star');
       } else {
-        stars.push('star-outline'); // empty
+        stars.push('star-outline');
       }
     }
 
     return stars;
   }
 
-  // 🔹 2. Image with fallback
   getTeacherImage(): string {
     return this.tutor.image 
       ? this.tutor.image 
-      : 'assets/placeholder-user.png'; // put a placeholder image here
+      : 'assets/placeholder-user.png';
   }
 
+  openBooking() {
+    this.isBookingOpen = true;
+  }
+
+  closeBooking() {
+    this.isBookingOpen = false;
+  }
+
+  pay() {
+    console.log('Tutoría:', this.tutor.title);
+    console.log('Fecha:', this.selectedDate);
+    console.log('Método:', this.paymentMethod);
+    this.closeBooking();
+  }
 }

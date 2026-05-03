@@ -1,29 +1,18 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
-import {
-  IonButton,
-  IonButtons,
-  IonCheckbox,
-  IonContent,
-  IonHeader,
-  IonToolbar,
-  IonFooter,
-  IonIcon,
-  IonInput,
-  IonLabel,
-  IonTitle
-} from '@ionic/angular/standalone';
+import { IonicModule } from '@ionic/angular';
 
 import {
   personOutline,
-  logoGoogle,
-  logoApple,
   homeOutline,
-  personCircleOutline
+  personCircleOutline,
+  logInOutline,
+  logOutOutline,
+  gridOutline
 } from 'ionicons/icons';
 
 import { addIcons } from 'ionicons';
@@ -37,20 +26,10 @@ import { addIcons } from 'ionicons';
     CommonModule,
     FormsModule,
     RouterLink,
-    IonContent,
-    IonHeader,
-    IonToolbar,
-    IonFooter,
-    IonIcon,
-    IonInput,
-    IonLabel,
-    IonButton,
-    IonButtons,
-    IonCheckbox,
-    IonTitle
+    IonicModule
   ]
 })
-export class RegisterPage {
+export class RegisterPage implements OnInit{
   user: {
     rut: string;
     name: string;
@@ -68,18 +47,33 @@ export class RegisterPage {
     role: 'student',
     acceptTerms: false
   };
+  isLoggedIn: boolean = false;
+  isPopoverOpen = false;
+  popoverEvent: Event | null = null;
 
   constructor(
     private authService: AuthService,
     private router: Router
   ) {
     addIcons({
-      personOutline,
-      logoGoogle,
-      logoApple,
-      homeOutline,
-      personCircleOutline
+      'person-outline': personOutline,
+      'home-outline': homeOutline,
+      'person-circle-outline': personCircleOutline,
+      'log-in-outline': logInOutline,
+      'log-out-outline': logOutOutline,
+      'grid-outline': gridOutline
     });
+  }
+
+  ngOnInit() {
+    this.checkSession();
+  }
+
+  checkSession() {
+    const token = localStorage.getItem('token');
+    const user = localStorage.getItem('user');
+
+    this.isLoggedIn = !!token && !!user;
   }
 
   onRutChange(value: string) {
@@ -115,8 +109,59 @@ export class RegisterPage {
     console.log('Ir a home');
   }
 
-  goProfile() {
-    console.log('Ir a perfil');
+  openPopover(event: Event) {
+    this.checkSession();
+    this.popoverEvent = event;
+    this.isPopoverOpen = true;
+  }
+
+  closePopover() {
+    this.isPopoverOpen = false;
+    this.popoverEvent = null;
+  }
+
+  goToLogin() {
+    this.closePopover();
+
+    setTimeout(() => {
+      this.router.navigate(['/login']);
+    }, 100);
+  }
+
+  goToProfile() {
+    const user = localStorage.getItem('user');
+
+    this.closePopover();
+
+    setTimeout(() => {
+      if (!user) {
+        this.router.navigate(['/login']);
+        return;
+      }
+
+      const parsedUser = JSON.parse(user);
+      this.router.navigate(['/user-profile', parsedUser.id_usuario]);
+    }, 100);
+  }
+
+  goToDashboard() {
+    this.closePopover();
+
+    setTimeout(() => {
+      this.router.navigate(['/dashboard']);
+    }, 100);
+  }
+
+  logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    this.isLoggedIn = false;
+
+    this.closePopover();
+
+    setTimeout(() => {
+      this.router.navigate(['/login']);
+    }, 100);
   }
 
   createAccount() {

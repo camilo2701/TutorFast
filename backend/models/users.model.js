@@ -74,6 +74,14 @@ async function createUser(userData) {
     .single();
 }
 
+async function getUserByEmail(correo) {
+  return await supabase
+    .from('usuario')
+    .select('*')
+    .eq('correo_electronico', correo)
+    .maybeSingle();
+}
+
 module.exports = {
   getAllUsers,
   getUserById,
@@ -81,5 +89,6 @@ module.exports = {
   getTutorAds,
   getTutorReviews,
   getUserByEmail,
-  createUser
+  createUser,
+  getUserByEmail
 };

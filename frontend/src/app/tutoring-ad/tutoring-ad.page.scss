@@ -55,10 +55,16 @@ ion-card {
 }
 
 /* Image styling */
-ion-img {
+.image-card {
+  width: 84%;
+  aspect-ratio: 1 / 1; /* 🔥 cuadrado perfecto */
+  overflow: hidden;
+}
+
+.image-card ion-img {
   width: 100%;
-  height: 440px;
-  object-fit: cover;
+  height: 100%;
+  object-fit: cover; /* recorta sin deformar */
 }
 
 /* Price */
@@ -74,6 +80,36 @@ ion-img {
 }
 
 /* Stars spacing */
+/* ⭐ ESTRELLAS */
+.stars-container {
+  display: flex;
+  align-items: center;
+}
+
+.star-icon {
+  color: var(--ion-color-tertiary);
+  margin-right: 3px;
+  font-size: 20px;
+}
+
+.avg-rating {
+  margin-left: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--ion-color-primary);
+}
+
+.review-stars {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rating-number {
+  font-size: 14px;
+  color: var(--ion-color-medium);
+}
+
 ion-icon {
   margin-right: 2px;
   font-size: 18px;
@@ -90,7 +126,152 @@ ion-avatar img {
 }
 
 .page-container {
-  max-width: 1000px;   // controls how wide your content is
+  max-width: 900px;   // controls how wide your content is
   margin: 0 auto;      // centers it horizontally
   padding: 0 16px;     // small breathing space on mobile
+}
+
+// POPUP
+
+ion-modal {
+  --width: 100%;
+  --height: 100%;
+  --background: transparent; // elimina fondo raro
+}
+
+.modal-content {
+  --background: rgba(0, 0, 0, 0.4); // overlay oscuro correcto
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.booking-card {
+  width: 100%;
+  max-width: 420px;
+  margin: auto;
+  border-radius: 16px;
+}
+
+/* Section titles */
+.section-title {
+  margin-top: 16px;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+/* Buttons spacing */
+.buttons {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Make calendar cleaner */
+ion-datetime {
+  width: 100%;
+  margin-top: 10px;
+
+  --background: #F2F2F2;
+  --color: #000;
+  --ion-color-step-150: #f4f4f4;
+  --ion-color-step-250: #e0e0e0;
+  --ion-text-color: #000;
+}
+
+ion-segment {
+  margin-top: 10px;
+}
+
+ion-segment-button {
+  --color: var(--ion-color-primary);          // texto normal
+  --color-checked: white;                     // texto activo
+  --background-checked: var(--ion-color-primary);
+  --indicator-color: transparent;             // quita línea fea
+}
+
+.payment-segment {
+  margin-top: 10px;
+}
+
+/* Default (unselected) */
+.payment-segment ion-segment-button {
+  --color: var(--ion-color-primary);
+  --background: transparent;
+  --border-color: var(--ion-color-primary);
+  border: 1px solid var(--ion-color-primary);
+  border-radius: 8px;
+  margin: 4px;
+}
+
+/* Selected */
+.payment-segment ion-segment-button.segment-button-checked {
+  --color: white;
+  --background: var(--ion-color-primary);
+}
+
+/* Layout (icon + text vertical) */
+.payment-segment ion-segment-button {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Icon size */
+.payment-segment ion-icon {
+  font-size: 18px;
+}
+
+.profile-menu-popover::part(content) {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  padding: 0 !important;
+
+  margin-top: 6px;
+  margin-left: -10px; /* 👈 empuja hacia la izquierda */
+
+  overflow: hidden !important;
+}
+
+/* ❌ sin flecha */
+.profile-menu-popover::part(arrow) {
+  display: none !important;
+}
+
+/* 📦 contenedor */
+.profile-menu {
+  background: var(--ion-color-tertiary);
+  border-radius: 2px;
+
+  padding: 2px;
+  width: 200px;
+
+  display: flex;
+  flex-direction: column;
+}
+
+/* 🔘 botones */
+.profile-menu-btn {
+  --background: transparent;
+  --background-hover: rgba(255, 255, 255, 0.08);
+  --background-activated: rgba(255, 255, 255, 0.12);
+  --color: white;
+
+  justify-content: flex-start;
+  text-transform: none;
+
+  margin: 1px 0;
+  border-radius: 1px;
+
+  font-size: 15px;
+}
+
+/* 🎯 iconos */
+.profile-menu-btn ion-icon {
+  color: white;
+  font-size: 18px;
+  margin-right: 8px;
 }

@@ -7,6 +7,9 @@ import { Router } from '@angular/router';
 import { addIcons } from 'ionicons';
 import { homeOutline, personCircleOutline } from 'ionicons/icons';
 
+import { logInOutline, logOutOutline, personOutline,
+  gridOutline, cardOutline, businessOutline } from 'ionicons/icons';
+
 @Component({
   selector: 'app-search-results',
   templateUrl: './search-results.page.html',
@@ -21,12 +24,22 @@ import { homeOutline, personCircleOutline } from 'ionicons/icons';
 })
 export class SearchResultsPage implements OnInit {
 
-  constructor(private router: Router) {
-    addIcons({
-      'home-outline': homeOutline,
-      'person-circle-outline': personCircleOutline,
-    });
-  }
+  isLoggedIn: boolean = false;
+  isPopoverOpen = false;
+  popoverEvent: Event | null = null;
+
+  constructor(private router: Router) { 
+      addIcons({
+        'home-outline': homeOutline,
+        'person-circle-outline': personCircleOutline,
+        'card-outline': cardOutline,
+        'business-outline': businessOutline,
+        'log-in-outline': logInOutline,
+        'log-out-outline': logOutOutline,
+        'person-outline': personOutline,
+        'grid-outline': gridOutline
+      });
+    }
 
   searchQuery: string = '';
 
@@ -49,19 +62,80 @@ export class SearchResultsPage implements OnInit {
   filteredTutores: any[] = [];
 
   ngOnInit() {
+    this.checkSession();
+
     this.filteredTutores = [...this.tutores].sort((a, b) => {
       if (a.premium === b.premium) return 0;
       return a.premium ? -1 : 1;
     });
   }
 
+  checkSession() {
+    const token = localStorage.getItem('token');
+    const user = localStorage.getItem('user');
+
+    this.isLoggedIn = !!token && !!user;
+  }
+
   goHome(){
     this.router.navigate(['/home']);
   }
-  goProfile(){
-    //DETERMINAR CUAL PROFILE ES EL CORRECTO
   
+  openPopover(event: Event) {
+    this.checkSession();
+    this.popoverEvent = event;
+    this.isPopoverOpen = true;
   }
+
+  closePopover() {
+    this.isPopoverOpen = false;
+    this.popoverEvent = null;
+  }
+
+  goToLogin() {
+    this.closePopover();
+
+    setTimeout(() => {
+      this.router.navigate(['/login']);
+    }, 100);
+  }
+
+  goToProfile() {
+    const user = localStorage.getItem('user');
+
+    this.closePopover();
+
+    setTimeout(() => {
+      if (!user) {
+        this.router.navigate(['/login']);
+        return;
+      }
+
+      const parsedUser = JSON.parse(user);
+      this.router.navigate(['/user-profile', parsedUser.id_usuario]);
+    }, 100);
+  }
+
+  goToDashboard() {
+    this.closePopover();
+
+    setTimeout(() => {
+      this.router.navigate(['/dashboard']);
+    }, 100);
+  }
+
+  logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    this.isLoggedIn = false;
+
+    this.closePopover();
+
+    setTimeout(() => {
+      this.router.navigate(['/login']);
+    }, 100);
+  }
+
   goTutoria(){
     this.router.navigate(['/tutoria']);
   }

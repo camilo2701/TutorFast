@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 import { addIcons } from 'ionicons';
 import { homeOutline, personCircleOutline } from 'ionicons/icons';
@@ -18,9 +18,14 @@ import { homeOutline, personCircleOutline } from 'ionicons/icons';
     FormsModule,
     RouterModule,
   ]})
+
 export class HelpCenterPage implements OnInit {
 
-  constructor() { 
+  isLoggedIn: boolean = false;
+  isPopoverOpen = false;
+  popoverEvent: Event | null = null;
+
+  constructor(private router: Router) { 
     addIcons({
       'home-outline': homeOutline,
       'person-circle-outline': personCircleOutline,
@@ -28,6 +33,69 @@ export class HelpCenterPage implements OnInit {
   }
 
   ngOnInit() {
+    this.checkSession();
+  }
+
+  checkSession() {
+    const token = localStorage.getItem('token');
+    const user = localStorage.getItem('user');
+
+    this.isLoggedIn = !!token && !!user;
+  }
+
+  openPopover(event: Event) {
+    this.checkSession();
+    this.popoverEvent = event;
+    this.isPopoverOpen = true;
+  }
+
+  closePopover() {
+    this.isPopoverOpen = false;
+    this.popoverEvent = null;
+  }
+
+  goToLogin() {
+    this.closePopover();
+
+    setTimeout(() => {
+      this.router.navigate(['/login']);
+    }, 100);
+  }
+
+  goToProfile() {
+    const user = localStorage.getItem('user');
+
+    this.closePopover();
+
+    setTimeout(() => {
+      if (!user) {
+        this.router.navigate(['/login']);
+        return;
+      }
+
+      const parsedUser = JSON.parse(user);
+      this.router.navigate(['/user-profile', parsedUser.id_usuario]);
+    }, 100);
+  }
+
+  goToDashboard() {
+    this.closePopover();
+
+    setTimeout(() => {
+      this.router.navigate(['/dashboard']);
+    }, 100);
+  }
+
+  logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    this.isLoggedIn = false;
+
+    this.closePopover();
+
+    setTimeout(() => {
+      this.router.navigate(['/login']);
+    }, 100);
   }
 
 }

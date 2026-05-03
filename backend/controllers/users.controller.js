@@ -1,5 +1,6 @@
 const UserModel = require('../models/users.model');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 async function getAllUsers(req, res) {
   const { data, error } = await UserModel.getAllUsers();
@@ -166,8 +167,54 @@ async function createUser(req, res) {
   }
 }
 
+async function loginUser(req, res) {
+  const { correo_electronico, contrasena } = req.body;
+
+  if (!correo_electronico || !contrasena) {
+    return res.status(400).json({ error: 'Correo y contraseña son obligatorios' });
+  }
+
+  const { data: usuario, error } = await UserModel.getUserByEmail(correo_electronico);
+
+  if (error) {
+    return res.status(500).json({ error: error.message });
+  }
+
+  if (!usuario) {
+    return res.status(401).json({ error: 'Credenciales incorrectas' });
+  }
+
+  const passwordValida = await bcrypt.compare(contrasena, usuario.contrasena);
+
+  if (!passwordValida) {
+    return res.status(401).json({ error: 'Credenciales incorrectas' });
+  }
+
+  const token = jwt.sign(
+    {
+      id_usuario: usuario.id_usuario,
+      rol: usuario.rol
+    },
+    process.env.JWT_SECRET,
+    { expiresIn: process.env.JWT_EXPIRES_IN || '10m' }
+  );
+
+  res.json({
+    message: 'Inicio de sesión correcto',
+    token,
+    user: {
+      id_usuario: usuario.id_usuario,
+      nombre_real: usuario.nombre_real,
+      nombre_de_usuario: usuario.nombre_de_usuario,
+      correo_electronico: usuario.correo_electronico,
+      rol: usuario.rol
+    }
+  });
+}
+
 module.exports = {
   getAllUsers,
   getUserProfile,
-  createUser
+  createUser,
+  loginUser
 };

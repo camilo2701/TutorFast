@@ -1,27 +1,72 @@
 <ion-header>
-
-  <!-- TOP BAR -->
   <ion-toolbar class="custom-toolbar" color="primary">
 
-    <!-- LEFT: HOME -->
     <ion-buttons slot="start">
-      <ion-button>
+      <ion-button routerLink="/home">
         <ion-icon name="home-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
 
-    <!-- CENTER: TITLE -->
     <ion-title class="custom-title">TutorFast</ion-title>
 
-    <!-- RIGHT: PROFILE -->
     <ion-buttons slot="end">
-      <ion-button>
+      <ion-button (click)="openPopover($event)">
         <ion-icon name="person-circle-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
 
   </ion-toolbar>
 </ion-header>
+
+<ion-popover
+  [isOpen]="isPopoverOpen"
+  [event]="popoverEvent"
+  (didDismiss)="isPopoverOpen = false"
+  side="bottom"
+  alignment="start"
+  mode="ios"
+  class="profile-menu-popover"
+>
+
+  <ng-template>
+
+    <div class="profile-menu">
+
+      <!-- 🔓 NO LOGEADO -->
+      <ng-container *ngIf="!isLoggedIn; else loggedInMenu">
+
+        <ion-button expand="block" fill="clear" (click)="goToLogin()" class="profile-menu-btn">
+          <ion-icon name="log-in-outline" slot="start"></ion-icon>
+          Iniciar sesión
+        </ion-button>
+
+      </ng-container>
+
+      <!-- 🔒 LOGEADO -->
+      <ng-template #loggedInMenu>
+
+        <ion-button expand="block" fill="clear" (click)="goToProfile()" class="profile-menu-btn">
+          <ion-icon name="person-outline" slot="start"></ion-icon>
+          Perfil
+        </ion-button>
+
+        <ion-button expand="block" fill="clear" (click)="goToDashboard()" class="profile-menu-btn">
+          <ion-icon name="grid-outline" slot="start"></ion-icon>
+          Dashboard
+        </ion-button>
+
+        <ion-button expand="block" fill="clear" (click)="logout()" class="profile-menu-btn">
+          <ion-icon name="log-out-outline" slot="start"></ion-icon>
+          Cerrar sesión
+        </ion-button>
+
+      </ng-template>
+
+    </div>
+
+  </ng-template>
+
+</ion-popover>
 
 <ion-content color="secondary">
 
@@ -31,52 +76,35 @@
       <ion-row>
 
         <!-- IMAGE -->
-        <ion-col size="12" size-md="7">
-          <ion-card mode="ios" color="light">
+        <ion-col size="12" size-md="5">
+          <ion-card mode="ios" color="light" class="image-card">
             <ion-img [src]="getTeacherImage()"></ion-img>
           </ion-card>
         </ion-col>
 
         <!-- INFO -->
-        <ion-col size="12" size-md="5">
-
+        <ion-col size="12" size-md="7">
           <ion-card mode="ios" color="light">
             <ion-card-content>
 
+              <!-- NOMBRE + TIPO -->
               <ion-item lines="none" color="light">
-                <ion-avatar slot="start">
-                  <img [src]="getTeacherImage()" />
-                </ion-avatar>
-
                 <ion-label>
                   <ion-text color="primary">
-                    <h2>{{ tutor.name }} {{ tutor.lastname }}</h2>
-                    <p>{{ tutor.profession }}</p>
+                    <h1><b>{{ tutor.name }} {{ tutor.lastname }}</b></h1>
+                    <p>Tutor</p>
                   </ion-text>
                 </ion-label>
               </ion-item>
 
-              <ion-list lines="none">
-                <ion-item *ngFor="let subject of tutor.subjects" lines="none" color="light">
-                  <ion-label>
-                    <ion-text color="primary">{{ subject }}</ion-text>
-                  </ion-label>
-                </ion-item>
-              </ion-list>
-
-            </ion-card-content>
-          </ion-card>
-
-          <!-- PRICE -->
-          <ion-card mode="ios" color="light">
-            <ion-card-content>
-
+              <!-- PRECIO -->
               <h2 class="price">
                 {{ tutor.price | currency:'CLP':'symbol':'1.0-0' }}
                 <span>/ hora</span>
               </h2>
 
-              <ion-button expand="block" color="tertiary">
+              <!-- BOTÓN -->
+              <ion-button expand="block" color="tertiary" (click)="openBooking()">
                 <ion-label color="light">
                   CONTACTAR TUTOR
                 </ion-label>
@@ -90,12 +118,17 @@
             <ion-card-content>
 
               <ion-row class="ion-align-items-center">
-                <ion-col size="auto">
+                
+                <ion-col size="auto" class="stars-container">
                   <ion-icon 
                     *ngFor="let star of stars" 
                     [name]="star"
-                    color="warning">
+                    class="star-icon">
                   </ion-icon>
+                  <!-- 🔥 PROMEDIO -->
+                  <span class="avg-rating">
+                    {{ averageRating }}
+                  </span>
                 </ion-col>
 
                 <ion-col>
@@ -103,6 +136,7 @@
                     ({{ reviews.length }} reviews)
                   </ion-text>
                 </ion-col>
+
               </ion-row>
 
             </ion-card-content>
@@ -114,11 +148,19 @@
 
     <!-- DESCRIPTION -->
     <ion-card mode="ios" color="light">
+
+      <ion-card-header>
+        <ion-card-title class="tutoring-title">
+          <ion-text color="primary">{{ tutor.title }}</ion-text>
+        </ion-card-title>
+      </ion-card-header>
+
       <ion-card-content>
         <ion-text color="primary">
           {{ tutor.description }}
         </ion-text>
       </ion-card-content>
+
     </ion-card>
 
     <!-- REVIEWS -->
@@ -141,12 +183,16 @@
                 <h2>{{ review.student }}</h2>
               </ion-text>
 
-              <p>
+              <p class="review-stars">
                 <ion-icon 
-                  *ngFor="let star of getStarsArray(review.rating)" 
+                  *ngFor="let star of getReviewStars(review.rating)" 
                   [name]="star"
-                  color="warning">
+                  class="star-icon">
                 </ion-icon>
+
+                <span class="rating-number">
+                  <ion-text color="primary">{{ review.rating }}</ion-text>
+                </span>
               </p>
 
               <ion-text color="primary">
@@ -155,7 +201,7 @@
 
             </ion-label>
 
-            <ion-note slot="end" color="medium">
+            <ion-note slot="end" color="secondary">
               {{ review.date }}
             </ion-note>
 
@@ -186,12 +232,99 @@
 
       <!-- RIGHT -->
       <div class="footer-links">
-        <a href="#">Términos y servicios</a>
-        <a href="#">Política de privacidad</a>
-        <a href="#">Centro de ayuda</a>
+        <a routerLink="/home">Términos y servicios</a>
+        <a routerLink="/privacy-policy">Política de privacidad</a>
+        <a routerLink="/help-center">Centro de ayuda</a>
       </div>
 
     </div>
 
   </ion-toolbar>
 </ion-footer>
+
+<ion-modal [isOpen]="isBookingOpen" (didDismiss)="closeBooking()">
+
+  <ng-template>
+
+    <ion-content class="modal-content">
+
+      <ion-card class="booking-card" color="light">
+
+        <ion-card-header>
+          <ion-card-title>
+            <ion-label color="primary">Confirmar sesión de tutoría</ion-label>
+          </ion-card-title>
+        </ion-card-header>
+
+        <ion-card-content>
+
+          <!-- INFO -->
+          <ion-item lines="none" color="light">
+            <ion-label color="primary">Tutor</ion-label>
+            <ion-note slot="end">
+              {{ tutor.name }} {{ tutor.lastname }}
+            </ion-note>
+          </ion-item>
+
+          <ion-item lines="none" color="light">
+            <ion-label color="primary">Asignatura</ion-label>
+            <ion-note slot="end">
+              {{ tutor.subjects[0] }}
+            </ion-note>
+          </ion-item>
+
+          <ion-item lines="none" color="light">
+            <ion-label color="primary">Precio / hora</ion-label>
+            <ion-note slot="end">
+              {{ tutor.price | currency:'CLP':'symbol':'1.0-0' }}
+            </ion-note>
+          </ion-item>
+
+          <!-- CALENDAR -->
+          <ion-label color="primary"><h3 class="section-title">Selecciona fecha</h3></ion-label>
+
+          <ion-datetime
+            presentation="date"
+            [(ngModel)]="selectedDate"
+            locale="es-CL">
+          </ion-datetime>
+
+          <!-- PAYMENT -->
+          <ion-label color="primary"><h3 class="section-title">Método de pago</h3></ion-label>
+
+          <ion-segment [(ngModel)]="paymentMethod" class="payment-segment">
+
+            <ion-segment-button value="credit">
+              <ion-icon name="card-outline"></ion-icon>
+              <ion-label>Crédito</ion-label>
+            </ion-segment-button>
+
+            <ion-segment-button value="debit">
+              <ion-icon name="business-outline"></ion-icon>
+              <ion-label>Débito</ion-label>
+            </ion-segment-button>
+
+          </ion-segment>
+
+          <!-- ACTIONS -->
+          <div class="buttons">
+
+            <ion-button expand="block" color="tertiary" (click)="pay()">
+              <ion-label color="light">Pagar {{ tutor.price | currency:'CLP':'symbol':'1.0-0' }}</ion-label>
+            </ion-button>
+
+            <ion-button expand="block" fill="outline" (click)="closeBooking()">
+              Cancelar
+            </ion-button>
+
+          </div>
+
+        </ion-card-content>
+
+      </ion-card>
+
+    </ion-content>
+
+  </ng-template>
+
+</ion-modal>
