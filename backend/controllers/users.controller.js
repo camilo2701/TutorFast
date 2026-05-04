@@ -40,6 +40,7 @@ async function getUserProfile(req, res) {
         usuario.rol === 1 ? 'tutor' :
         usuario.rol === 2 ? 'admin' :
         'unknown',
+      suscripcion: usuario.suscripcion,
       image: usuario.pfp
     },
     reviews: [],
@@ -188,6 +189,7 @@ async function createUser(req, res) {
         nombre_de_usuario: data.nombre_de_usuario,
         correo_electronico: data.correo_electronico,
         rol: data.rol,
+        suscripcion: data.suscripcion,
         pfp: data.pfp
       }
     });
@@ -238,6 +240,7 @@ async function loginUser(req, res) {
       nombre_real: usuario.nombre_real,
       nombre_de_usuario: usuario.nombre_de_usuario,
       correo_electronico: usuario.correo_electronico,
+      suscripcion: usuario.suscripcion,
       rol: usuario.rol
     }
   });

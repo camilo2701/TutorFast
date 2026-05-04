@@ -191,3 +191,55 @@ ion-label{
   --border-width: 0;
 }
 
+.profile-menu-popover::part(content) {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  padding: 0 !important;
+
+  margin-top: 6px;
+  margin-left: -10px; /* 👈 empuja hacia la izquierda */
+
+  overflow: hidden !important;
+}
+
+/* ❌ sin flecha */
+.profile-menu-popover::part(arrow) {
+  display: none !important;
+}
+
+/* 📦 contenedor */
+.profile-menu {
+  background: var(--ion-color-tertiary);
+  border-radius: 2px;
+
+  padding: 2px;
+  width: 200px;
+
+  display: flex;
+  flex-direction: column;
+}
+
+/* 🔘 botones */
+.profile-menu-btn {
+  --background: transparent;
+  --background-hover: rgba(255, 255, 255, 0.08);
+  --background-activated: rgba(255, 255, 255, 0.12);
+  --color: white;
+
+  justify-content: flex-start;
+  text-transform: none;
+
+  margin: 1px 0;
+  border-radius: 1px;
+
+  font-size: 15px;
+}
+
+/* 🎯 iconos */
+.profile-menu-btn ion-icon {
+  color: white;
+  font-size: 18px;
+  margin-right: 8px;
+}
+

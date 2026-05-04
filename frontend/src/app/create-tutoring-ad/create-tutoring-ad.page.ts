@@ -7,6 +7,9 @@ import { Router } from '@angular/router';
 import { addIcons } from 'ionicons';
 import { homeOutline, personCircleOutline } from 'ionicons/icons';
 import { AlertController } from '@ionic/angular';
+import { logInOutline, logOutOutline, personOutline,
+  gridOutline, cardOutline, businessOutline } from 'ionicons/icons';
+import { TutoringAdService } from '../services/tutoring-ad.service';
 
 @Component({
   selector: 'app-create-tutoring-ad',
@@ -24,33 +27,43 @@ export class CreateTutoringAdPage implements OnInit {
 
   form: any = {
     price: null,
-    career: '',
+    title: '',
     subject: '',
     description: '',
-    boost: false,
-    image: null
+    boost: false
   };
 
-  constructor(private alertController: AlertController, private router: Router) {
+  isLoggedIn: boolean = false;
+  isPopoverOpen = false;
+  popoverEvent: Event | null = null;
+
+  constructor(private alertController: AlertController, private router: Router, private tutoringAdService: TutoringAdService) {
     addIcons({
       'home-outline': homeOutline,
       'person-circle-outline': personCircleOutline,
+      'card-outline': cardOutline,
+      'business-outline': businessOutline,
+      'log-in-outline': logInOutline,
+      'log-out-outline': logOutOutline,
+      'person-outline': personOutline,
+      'grid-outline': gridOutline
     });
   }
 
-  ngOnInit() {}
-
-  // IMAGEN
-  openFileSelector(fileInput: HTMLInputElement) {
-    fileInput.click();
+  ngOnInit() {
+    this.checkSession();
   }
-  onFileSelected(event: any) {
-    const file = event.target.files[0];
 
-    if (file) {
-      this.form.image = file;
-      console.log('Imagen seleccionada:', file);
-    }
+  checkSession() {
+    const token = localStorage.getItem('token');
+    const user = localStorage.getItem('user');
+
+    this.isLoggedIn = !!token && !!user;
+  }
+
+  getLoggedUser() {
+    const user = localStorage.getItem('user');
+    return user ? JSON.parse(user) : null;
   }
 
   // VALIDACIÓN BÁSICA
@@ -60,7 +73,7 @@ export class CreateTutoringAdPage implements OnInit {
     return (
       !isNaN(price) &&           // es número
       price > 0 &&               // mayor a 0
-      this.form.career.trim() &&
+      this.form.title.trim() &&
       this.form.subject.trim() &&
       this.form.description.trim()
     );
@@ -70,10 +83,61 @@ export class CreateTutoringAdPage implements OnInit {
     console.log('Navegar a Home');
     this.router.navigateByUrl('/home')
   }
-  goProfile(){
-    console.log('Navegar a Profile');
-    //this.router.navigateByUrl('/home')
+  openPopover(event: Event) {
+    this.checkSession();
+    this.popoverEvent = event;
+    this.isPopoverOpen = true;
   }
+
+  closePopover() {
+    this.isPopoverOpen = false;
+    this.popoverEvent = null;
+  }
+
+  goToLogin() {
+    this.closePopover();
+
+    setTimeout(() => {
+      this.router.navigate(['/login']);
+    }, 100);
+  }
+
+  goToProfile() {
+    const user = localStorage.getItem('user');
+
+    this.closePopover();
+
+    setTimeout(() => {
+      if (!user) {
+        this.router.navigate(['/login']);
+        return;
+      }
+
+      const parsedUser = JSON.parse(user);
+      this.router.navigate(['/user-profile', parsedUser.id_usuario]);
+    }, 100);
+  }
+
+  goToDashboard() {
+    this.closePopover();
+
+    setTimeout(() => {
+      this.router.navigate(['/dashboard']);
+    }, 100);
+  }
+
+  logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    this.isLoggedIn = false;
+
+    this.closePopover();
+
+    setTimeout(() => {
+      this.router.navigate(['/login']);
+    }, 100);
+  }
+
   async showAlert(message: string) {
     const alert = await this.alertController.create({
       header: 'Atención',
@@ -83,45 +147,74 @@ export class CreateTutoringAdPage implements OnInit {
 
     await alert.present();
   }
+
   onSubmit() {
+    const loggedUser = this.getLoggedUser();
+
+    if (!loggedUser) {
+      this.showAlert('Debes iniciar sesión para publicar un anuncio.');
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    if (loggedUser.rol !== 1) {
+      this.showAlert('Solo los tutores pueden publicar anuncios.');
+      return;
+    }
+
+    if (this.form.boost && loggedUser.suscripcion !== true) {
+      this.showAlert('Necesitas una suscripción activa para potenciar anuncios.');
+      this.form.boost = false;
+      return;
+    }
+
     if (!this.isFormValid()) {
       this.showAlert('Campos incompletos o precio inválido. Por favor, revisa el formulario.');
       return;
     }
 
     const payload = {
-      price: Number(this.form.price),
-      career: this.form.career,
-      subject: this.form.subject,
-      description: this.form.description,
-      boost: this.form.boost
+      precio_por_hora: Number(this.form.price),
+      titulo: this.form.title,
+      asignatura: this.form.subject,
+      descripcion: this.form.description,
+      boosted: this.form.boost
     };
 
-    // 🔥 FUTURO BACKEND
-    /*
-    this.http.post('API_URL', payload).subscribe(...)
-    */
+    this.tutoringAdService.createAd(payload).subscribe({
+      next: () => {
+        this.showAlert('Publicación creada exitosamente.');
 
-    // Si hay imagen → usar FormData
-    if (this.form.image) {
-      const formData = new FormData();
+        this.form = {
+          price: null,
+          title: '',
+          subject: '',
+          description: '',
+          boost: false
+        };
 
-      formData.append('data', JSON.stringify(payload));
-      formData.append('image', this.form.image);
-
-      this.showAlert('Publicación creada exitosamente.');
-    }
+        this.router.navigate(['/home']);
+      },
+      error: (error) => {
+        this.showAlert(error.error?.error || 'Error al crear el anuncio.');
+      }
+    });
   }
 
   // CANCELAR
   onCancel() {
     this.form = {
       price: null,
-      career: '',
+      title: '',
       subject: '',
       description: '',
-      boost: false,
-      image: null
+      boost: false
     };
   }
+
+  canBoost(): boolean {
+    const user = this.getLoggedUser();
+    return user?.suscripcion === true;
+  }
+
 }
