@@ -83,7 +83,7 @@
       <h1>Crear Cuenta</h1>
       <p class="subtitle">Únete a nuestra plataforma de tutorías</p>
 
-      <form (ngSubmit)="createAccount()">
+      <form  #form="ngForm" (ngSubmit)="createAccount()">
         <ion-label>RUT</ion-label>
         <ion-input
           type="text"
@@ -143,7 +143,31 @@
         <div class="error-msg" *ngIf="passCtrl.invalid && passCtrl.touched">
           Debe ser alfanumérica, tener mín. 1 mayúscula y 1 carácter especial.
         </div>
+        <div class="profile-image-section">
+        <p></p>
 
+          <div class="image-preview">
+            <img *ngIf="previewUrl; else defaultImg" [src]="previewUrl" />
+            
+            <ng-template #defaultImg>
+              <ion-icon name="person-circle-outline"></ion-icon>
+            </ng-template>
+          </div>
+
+          <input
+            type="file"
+            accept="image/*"
+            (change)="onFileSelected($event)"
+            hidden
+            #fileInput
+          />
+
+          <ion-button size="small" (click)="fileInput.click()">
+            Subir foto de perfil
+          </ion-button>
+
+        </div>
+        <p class = "data-restriction"> Formatos soportados: PNG, JPG, JPEG. 2MB máximo</p>
         <p class="role-title">Soy un:</p>
 
         <div class="role-selector">
@@ -179,6 +203,8 @@
         <a routerLink="/login">Inicia sesión</a>
       </p>
 
+      <div class="social-divider"></div>
+
     </section>
   </main>
 </ion-content>
@@ -193,7 +219,7 @@
 
       <!-- RIGHT -->
       <div class="footer-links">
-        <a routerLink="/home">Términos y servicios</a>
+        <a routerLink="/register">Términos y servicios</a>
         <a routerLink="/privacy-policy">Política de privacidad</a>
         <a routerLink="/help-center">Centro de ayuda</a>
       </div>

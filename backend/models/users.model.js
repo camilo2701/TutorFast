@@ -9,7 +9,7 @@ async function getAllUsers() {
 async function getUserById(idUsuario) {
   return await supabase
     .from('usuario')
-    .select('id_usuario, nombre_real, nombre_de_usuario, rol')
+    .select('id_usuario, nombre_real, nombre_de_usuario, rol, pfp')
     .eq('id_usuario', idUsuario)
     .maybeSingle();
 }

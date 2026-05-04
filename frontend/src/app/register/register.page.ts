@@ -50,6 +50,8 @@ export class RegisterPage implements OnInit{
   isLoggedIn: boolean = false;
   isPopoverOpen = false;
   popoverEvent: Event | null = null;
+  selectedFile: File | null = null;
+  previewUrl: string | null = null;
 
   constructor(
     private authService: AuthService,
@@ -74,6 +76,37 @@ export class RegisterPage implements OnInit{
     const user = localStorage.getItem('user');
 
     this.isLoggedIn = !!token && !!user;
+  }
+
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+
+    if (!file) return;
+
+    // Tipos permitidos
+    const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+
+    if (!allowedTypes.includes(file.type)) {
+      alert('Solo se permiten imágenes PNG, JPG o JPEG');
+      return;
+    }
+
+    // Validar tamaño (2MB)
+    const maxSize = 2 * 1024 * 1024;
+
+    if (file.size > maxSize) {
+      alert('La imagen debe ser menor a 2MB');
+      return;
+    }
+
+    this.selectedFile = file;
+
+    // Preview
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.previewUrl = reader.result as string;
+    };
+    reader.readAsDataURL(file);
   }
 
   onRutChange(value: string) {
@@ -165,21 +198,25 @@ export class RegisterPage implements OnInit{
   }
 
   createAccount() {
-  if (!this.user.acceptTerms) {
-    alert('Debes aceptar los términos y condiciones.');
-    return;
-  }
+    if (!this.user.acceptTerms) {
+      alert('Debes aceptar los términos y condiciones.');
+      return;
+    }
 
-  const userData = {
-      nombre_real: `${this.user.name} ${this.user.lastname}`,
-      nombre_de_usuario: this.user.email.split('@')[0],
-      correo_electronico: this.user.email,
-      contrasena: this.user.password,
-      rol: this.user.role === 'student' ? 0 : 1,
-      rut: this.user.rut.replace(/\./g, '')
-    };
+    const formData = new FormData();
 
-    this.authService.register(userData).subscribe({
+    formData.append('nombre_real', `${this.user.name} ${this.user.lastname}`);
+    formData.append('nombre_de_usuario', this.user.email.split('@')[0]);
+    formData.append('correo_electronico', this.user.email);
+    formData.append('contrasena', this.user.password);
+    formData.append('rol', this.user.role === 'student' ? '0' : '1');
+    formData.append('rut', this.user.rut.replace(/\./g, ''));
+
+    if (this.selectedFile) {
+      formData.append('pfp', this.selectedFile);
+    }
+
+    this.authService.register(formData).subscribe({
       next: (response) => {
         localStorage.setItem('token', response.token);
         localStorage.setItem('user', JSON.stringify(response.user));

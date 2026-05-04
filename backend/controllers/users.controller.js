@@ -1,6 +1,7 @@
 const UserModel = require('../models/users.model');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const supabase = require('../config/db');
 
 async function getAllUsers(req, res) {
   const { data, error } = await UserModel.getAllUsers();
@@ -39,7 +40,7 @@ async function getUserProfile(req, res) {
         usuario.rol === 1 ? 'tutor' :
         usuario.rol === 2 ? 'admin' :
         'unknown',
-      image: null
+      image: usuario.pfp
     },
     reviews: [],
     tutorSessions: [],
@@ -123,6 +124,33 @@ async function createUser(req, res) {
 
     const hashedPassword = await bcrypt.hash(contrasena, 10);
 
+    let pfpUrl = null;
+
+    if (req.file) {
+      const file = req.file;
+      const fileExt = file.originalname.split('.').pop();
+      const fileName = `${Date.now()}-${Math.round(Math.random() * 1e9)}.${fileExt}`;
+      const filePath = `profiles/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, file.buffer, {
+          contentType: file.mimetype,
+          upsert: false
+        });
+
+      if (uploadError) {
+        console.error('Error subiendo imagen:', uploadError);
+        return res.status(500).json({ error: uploadError.message });
+      }
+
+      const { data: publicUrlData } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(filePath);
+
+      pfpUrl = publicUrlData.publicUrl;
+    }
+
     const newUser = {
       nombre_real,
       nombre_de_usuario,
@@ -130,7 +158,8 @@ async function createUser(req, res) {
       contrasena: hashedPassword,
       rol,
       rut,
-      suscripcion: rol === 1 ? 1 : 0
+      suscripcion: rol === 1 ? 1 : 0,
+      pfp: pfpUrl
     };
 
     const jwt = require('jsonwebtoken');
@@ -151,19 +180,21 @@ async function createUser(req, res) {
     );
 
     res.status(201).json({
-    message: 'Usuario creado correctamente',
-    token,
-    user: {
+      message: 'Usuario creado correctamente',
+      token,
+      user: {
         id_usuario: data.id_usuario,
         nombre_real: data.nombre_real,
         nombre_de_usuario: data.nombre_de_usuario,
         correo_electronico: data.correo_electronico,
-        rol: data.rol
-    }
+        rol: data.rol,
+        pfp: data.pfp
+      }
     });
 
   } catch (error) {
-    res.status(500).json({ error: 'Error interno del servidor' });
+    console.error('Error en createUser:', error);
+    res.status(500).json({ error: error.message });
   }
 }
 
