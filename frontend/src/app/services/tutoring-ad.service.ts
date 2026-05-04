@@ -20,4 +20,19 @@ export class TutoringAdService {
 
     return this.http.post<any>(this.apiUrl, data, { headers });
   }
+
+  getTutoringAd(id: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${id}`);
+  }
+
+  confirmTutoria(data: any): Observable<any> {
+    const token = localStorage.getItem('token');
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    return this.http.post<any>(`${this.apiUrl}/confirm`, data, { headers });
+  }
+
 }

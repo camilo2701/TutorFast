@@ -35,8 +35,9 @@ export const routes: Routes = [
     loadComponent: () => import('./create-tutoring-ad/create-tutoring-ad.page').then( m => m.CreateTutoringAdPage)
   },
   {
-    path: 'tutoring-ad',
-    loadComponent: () => import('./tutoring-ad/tutoring-ad.page').then( m => m.TutoringAdPage)
+    path: 'tutoring-ad/:id',
+    loadComponent: () =>
+      import('./tutoring-ad/tutoring-ad.page').then(m => m.TutoringAdPage),
   },
   {
     path: 'user-profile/:id',

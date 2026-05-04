@@ -91,22 +91,22 @@
               <ion-item lines="none" color="light">
                 <ion-label>
                   <ion-text color="primary">
-                    <h1><b>{{ tutor.name }} {{ tutor.lastname }}</b></h1>
-                    <p>Tutor</p>
+                    <h1><b>{{ ad.tutor?.name }}</b></h1>
+                    <h2>Tutor en {{ ad.subject }}</h2>
                   </ion-text>
                 </ion-label>
               </ion-item>
 
               <!-- PRECIO -->
               <h2 class="price">
-                {{ tutor.price | currency:'CLP':'symbol':'1.0-0' }}
+                {{ ad.price | currency:'CLP':'symbol':'1.0-0' }}
                 <span>/ hora</span>
               </h2>
 
               <!-- BOTÓN -->
               <ion-button expand="block" color="tertiary" (click)="openBooking()">
                 <ion-label color="light">
-                  CONTACTAR TUTOR
+                  <h1><b>CONTACTAR TUTOR</b></h1>
                 </ion-label>
               </ion-button>
 
@@ -125,7 +125,7 @@
                     [name]="star"
                     class="star-icon">
                   </ion-icon>
-                  <!-- 🔥 PROMEDIO -->
+
                   <span class="avg-rating">
                     {{ averageRating }}
                   </span>
@@ -133,7 +133,7 @@
 
                 <ion-col>
                   <ion-text color="primary">
-                    ({{ reviews.length }} reviews)
+                    ({{ ad.reviewCount }} reviews)
                   </ion-text>
                 </ion-col>
 
@@ -151,13 +151,13 @@
 
       <ion-card-header>
         <ion-card-title class="tutoring-title">
-          <ion-text color="primary">{{ tutor.title }}</ion-text>
+          <ion-text color="primary">{{ ad.title }}</ion-text>
         </ion-card-title>
       </ion-card-header>
 
       <ion-card-content>
         <ion-text color="primary">
-          {{ tutor.description }}
+          {{ ad.description }}
         </ion-text>
       </ion-card-content>
 
@@ -176,35 +176,23 @@
         <ion-list *ngIf="reviews.length > 0; else noReviews" lines="none">
 
           <ion-item *ngFor="let review of reviews" lines="none" color="light">
-            
             <ion-label>
-
               <ion-text color="primary">
                 <h2>{{ review.student }}</h2>
               </ion-text>
 
-              <p class="review-stars">
+              <p>
                 <ion-icon 
-                  *ngFor="let star of getReviewStars(review.rating)" 
+                  *ngFor="let star of getStarsArray(review.rating)" 
                   [name]="star"
-                  class="star-icon">
+                  color="warning">
                 </ion-icon>
-
-                <span class="rating-number">
-                  <ion-text color="primary">{{ review.rating }}</ion-text>
-                </span>
               </p>
 
               <ion-text color="primary">
                 <p>{{ review.comment }}</p>
               </ion-text>
-
             </ion-label>
-
-            <ion-note slot="end" color="secondary">
-              {{ review.date }}
-            </ion-note>
-
           </ion-item>
 
         </ion-list>
@@ -232,7 +220,7 @@
 
       <!-- RIGHT -->
       <div class="footer-links">
-        <a routerLink="/home">Términos y servicios</a>
+        <a routerLink="/register">Términos y servicios</a>
         <a routerLink="/privacy-policy">Política de privacidad</a>
         <a routerLink="/help-center">Centro de ayuda</a>
       </div>
@@ -262,21 +250,21 @@
           <ion-item lines="none" color="light">
             <ion-label color="primary">Tutor</ion-label>
             <ion-note slot="end">
-              {{ tutor.name }} {{ tutor.lastname }}
+              {{ ad.tutor?.name }}
             </ion-note>
           </ion-item>
 
           <ion-item lines="none" color="light">
             <ion-label color="primary">Asignatura</ion-label>
             <ion-note slot="end">
-              {{ tutor.subjects[0] }}
+              {{ ad.subject }}
             </ion-note>
           </ion-item>
 
           <ion-item lines="none" color="light">
             <ion-label color="primary">Precio / hora</ion-label>
             <ion-note slot="end">
-              {{ tutor.price | currency:'CLP':'symbol':'1.0-0' }}
+              {{ ad.price | currency:'CLP':'symbol':'1.0-0' }}
             </ion-note>
           </ion-item>
 
@@ -309,8 +297,8 @@
           <!-- ACTIONS -->
           <div class="buttons">
 
-            <ion-button expand="block" color="tertiary" (click)="pay()">
-              <ion-label color="light">Pagar {{ tutor.price | currency:'CLP':'symbol':'1.0-0' }}</ion-label>
+            <ion-button expand="block" color="tertiary" (click)="confirmTutoria()">
+              <ion-label color="light">Pagar {{ ad.price | currency:'CLP':'symbol':'1.0-0' }}</ion-label>
             </ion-button>
 
             <ion-button expand="block" fill="outline" (click)="closeBooking()">

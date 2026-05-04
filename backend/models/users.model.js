@@ -9,7 +9,7 @@ async function getAllUsers() {
 async function getUserById(idUsuario) {
   return await supabase
     .from('usuario')
-    .select('id_usuario, nombre_real, nombre_de_usuario, rol, pfp')
+    .select('id_usuario, nombre_real, nombre_de_usuario, rol, suscripcion, pfp')
     .eq('id_usuario', idUsuario)
     .maybeSingle();
 }
@@ -20,12 +20,10 @@ async function getStudentReviews(idUsuario) {
     .select(`
       calificacion,
       contenido_review,
-      tutoria (
-        anuncio_tutoria (
-          titulo,
-          usuario (
-            nombre_real
-          )
+      anuncio_tutoria (
+        titulo,
+        usuario (
+          nombre_real
         )
       )
     `)
@@ -41,18 +39,17 @@ async function getTutorAds(idUsuario) {
 
 async function getTutorReviews(idsAnuncios) {
   return await supabase
-    .from('tutoria')
+    .from('review')
     .select(`
-      id_anuncio,
-      anuncio_tutoria (
-        titulo
+      id_review,
+      calificacion,
+      contenido_review,
+      usuario (
+        nombre_real
       ),
-      review (
-        calificacion,
-        contenido_review,
-        usuario (
-          nombre_real
-        )
+      anuncio_tutoria (
+        id_anuncio,
+        titulo
       )
     `)
     .in('id_anuncio', idsAnuncios);
@@ -89,6 +86,5 @@ module.exports = {
   getTutorAds,
   getTutorReviews,
   getUserByEmail,
-  createUser,
-  getUserByEmail
+  createUser
 };

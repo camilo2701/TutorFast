@@ -56,8 +56,8 @@ async function getUserProfile(req, res) {
     }
 
     profile.reviews = reviews.map((review) => ({
-      tutor: review.tutoria?.anuncio_tutoria?.usuario?.nombre_real || 'Tutor no encontrado',
-      subject: review.tutoria?.anuncio_tutoria?.titulo || 'Sin título',
+      tutor: review.anuncio_tutoria?.usuario?.nombre_real || 'Tutor no encontrado',
+      subject: review.anuncio_tutoria?.titulo || 'Sin título',
       comment: review.contenido_review || '',
       rating: Number(review.calificacion)
     }));
@@ -78,23 +78,19 @@ async function getUserProfile(req, res) {
     const idsAnuncios = anuncios.map((anuncio) => anuncio.id_anuncio);
 
     if (idsAnuncios.length > 0) {
-      const { data: tutorias, error: tutoriasError } = await UserModel.getTutorReviews(idsAnuncios);
+      const { data: tutorReviews, error: tutorReviewsError } = await UserModel.getTutorReviews(idsAnuncios);
 
-      if (tutoriasError) {
-        return res.status(500).json({ error: tutoriasError.message });
+      if (tutorReviewsError) {
+        return res.status(500).json({ error: tutorReviewsError.message });
       }
 
-      tutorias.forEach((tutoria) => {
-        if (tutoria.review && tutoria.review.length > 0) {
-          tutoria.review.forEach((review) => {
-            profile.tutorReviews.push({
-              tutor: review.usuario?.nombre_real || 'Estudiante no encontrado',
-              subject: tutoria.anuncio_tutoria?.titulo || 'Sin título',
-              comment: review.contenido_review || '',
-              rating: Number(review.calificacion)
-            });
-          });
-        }
+      tutorReviews.forEach((review) => {
+        profile.tutorReviews.push({
+          tutor: review.usuario?.nombre_real || 'Estudiante no encontrado',
+          subject: review.anuncio_tutoria?.titulo || 'Sin título',
+          comment: review.contenido_review || '',
+          rating: Number(review.calificacion)
+        });
       });
     }
   }
