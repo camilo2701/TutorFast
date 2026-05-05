@@ -1,0 +1,96 @@
+.custom-toolbar {
+  --min-height: 42px;
+}
+
+/* FORCE TRUE CENTERING */
+.custom-title {
+  width: 100%;
+  text-align: center;
+  padding: 0;
+}
+
+.footer-toolbar {
+  padding: 12px 20px;
+}
+
+.footer-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+/* LEFT TEXT */
+.footer-title {
+  margin: 0;
+  font-size: 14px;
+}
+
+/* RIGHT LINKS */
+.footer-links {
+  display: flex;
+  gap: 24px; // spacing between links
+}
+
+.footer-links a {
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.page-container {
+  max-width: 1000px;   // slightly narrower = better for reading text
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.profile-menu-popover::part(content) {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  padding: 0 !important;
+
+  margin-top: 6px;
+  margin-left: -10px; /* 👈 empuja hacia la izquierda */
+
+  overflow: hidden !important;
+}
+
+/* ❌ sin flecha */
+.profile-menu-popover::part(arrow) {
+  display: none !important;
+}
+
+/* 📦 contenedor */
+.profile-menu {
+  background: var(--ion-color-tertiary);
+  border-radius: 2px;
+
+  padding: 2px;
+  width: 200px;
+
+  display: flex;
+  flex-direction: column;
+}
+
+/* 🔘 botones */
+.profile-menu-btn {
+  --background: transparent;
+  --background-hover: rgba(255, 255, 255, 0.08);
+  --background-activated: rgba(255, 255, 255, 0.12);
+  --color: white;
+
+  justify-content: flex-start;
+  text-transform: none;
+
+  margin: 1px 0;
+  border-radius: 1px;
+
+  font-size: 15px;
+}
+
+/* 🎯 iconos */
+.profile-menu-btn ion-icon {
+  color: white;
+  font-size: 18px;
+  margin-right: 8px;
+}
