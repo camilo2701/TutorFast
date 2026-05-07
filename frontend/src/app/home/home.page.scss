@@ -8,33 +8,39 @@
   text-align: center;
   padding: 0;
 }
+.search-row {
+  flex-wrap: nowrap !important;
+}
 
-/* SEARCH BAR ROW */
+.button-col {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-button {
+  width: 100%;
+  height: 36px;
+  --background: var(--ion-color-tertiary)
+}
+
+/* evita comportamiento raro del searchbar en grid */
+ion-searchbar {
+  --border-radius: 20px;
+  --box-shadow: none;
+}
+/* SEARCH BAR */
 .search-toolbar {
   padding: 6px 0;
 }
 
-/* REMOVE EXTRA INTERNAL SPACING */
 ion-searchbar {
   --border-radius: 20px;
-  --box-shadow: none;
-  height: 36px;
+  --box-shadow: none; 
   padding: 0;
 }
 
-/* FIX ICON ALIGNMENT */
-.profile-col {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-}
-
-/* REMOVE DEFAULT BUTTON PADDING OFFSET */
-.profile-col ion-button {
-  margin: 0;
-}
-
-/* CENTER EMPTY STATE */
+/* EMPTY STATE */
 .empty-container {
   height: 100%;
   display: flex;
@@ -48,32 +54,158 @@ ion-searchbar {
   font-size: 16px;
   padding: 20px;
 }
+.nombre-tutor {
+  color: var(--ion-color-primary);
+  font-weight: bold;
+}
+.precio {
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #3880ff;
+  margin: 0;
+}
+/* =============================== */
+/* 🏆 TÍTULOS SECCIONES */
+/* =============================== */
 
-/* GRID */
+.section-title {
+  text-align: center;
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin: 16px 0;
+  color: #000;
+}
+
+/* =============================== */
+/* 🥇 PODIO DESTACADOS */
+/* =============================== */
+
+.featured-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 12px;
+  margin: 10px 0 24px 0;
+}
+
+.featured-card {
+  text-align: center;
+  border-radius: 14px;
+  transition: 0.25s ease;
+  cursor: pointer;
+  --background: #e0e0e0;
+  color: var(--ion-color-primary);
+}
+
+/* 🥇 1er lugar */
+.featured-card.big {
+  width: 170px;
+  transform: scale(1.1);
+}
+
+/* 🥈🥉 otros */
+.featured-card.small {
+  width: 140px;
+  opacity: 0.95;
+}
+
+.featured-rank {
+  font-size: 1.4rem;
+  margin-bottom: 4px;
+}
+
+.featured-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+}
+
+/* RESPONSIVE PODIO */
+@media (max-width: 768px) {
+  .featured-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .featured-card.big,
+  .featured-card.small {
+    width: 85%;
+    transform: none;
+  }
+}
+
+/* =============================== */
+/* 📚 OTRAS TUTORÍAS (GRID 3 COL) */
+/* =============================== */
+
 .grid-container {
   padding: 16px;
 }
 
-/* TUTOR CARD */
-.tutor-card {
-  border-radius: 12px;
+ion-grid {
+  max-width: 1100px;
+  margin: 0 auto;
 }
 
-/* FAKE IMAGE */
+/* CARD PRINCIPAL */
+.tutor-card {
+  width: 100%;
+  height: 100%;
+  border-radius: 14px;
+  background: #e0e0e0;
+  color: var(--ion-color-primary);
+  transition: 0.25s ease;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  transform: scale(0.95);
+  /* animación SOLO premium */
+
+}
+.tutor-avatar {
+  width: 60px;
+  height: 60px;
+  flex-shrink: 0;
+}
+
+.tutor-avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(0,0,0,0.1);
+}
+/* HOVER */
+.tutor-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+/* IMAGEN */
 .image-placeholder {
   width: 100%;
   height: 120px;
-  border-radius: 8px;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 10px;
 }
 
-/* TEXT */
+/* TEXTO */
 .price {
   font-weight: bold;
 }
 
 .desc {
   font-size: 14px;
+  color: #666;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;   /* 👈 máximo 2 líneas */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
+
+/* =============================== */
+/* FOOTER */
+/* =============================== */
 
 .footer-toolbar {
   padding: 12px 20px;
@@ -86,21 +218,37 @@ ion-searchbar {
   width: 100%;
 }
 
-/* LEFT TEXT */
 .footer-title {
   margin: 0;
   font-size: 14px;
 }
 
-/* RIGHT LINKS */
 .footer-links {
   display: flex;
-  gap: 24px; // spacing between links
+  gap: 24px;
 }
 
 .footer-links a {
   text-decoration: none;
   font-size: 14px;
+}
+
+
+
+/* animación suave tipo "respiración" */
+/* animación SOLO premium */
+.premium-card {
+  animation: tutorGlow 1.5s infinite alternate;
+  
+}
+
+@keyframes tutorGlow {
+  from {
+    box-shadow: 0 0 4px rgba(24, 24, 23, 0.568);
+  }
+  to {
+    box-shadow: 0 0 10px rgba(255, 140, 0, 0.925);
+  }
 }
 
 .profile-menu-popover::part(content) {
@@ -153,4 +301,12 @@ ion-searchbar {
   color: white;
   font-size: 18px;
   margin-right: 8px;
+}
+
+.featured-card {
+  cursor: pointer;
+}
+
+.tutor-card {
+  cursor: pointer;
 }

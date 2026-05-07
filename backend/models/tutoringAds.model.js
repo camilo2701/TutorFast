@@ -19,6 +19,7 @@ async function getTutoringAdById(idAnuncio) {
       asignatura,
       activo,
       boosted,
+      modality,
       usuario (
         id_usuario,
         nombre_real,
@@ -52,9 +53,53 @@ async function createTutoria(tutoriaData) {
     .single();
 }
 
+async function getAllTutoringAds() {
+  return await supabase
+    .from('anuncio_tutoria')
+    .select(`
+      id_anuncio,
+      precio_por_hora,
+      titulo,
+      descripcion,
+      asignatura,
+      boosted,
+      modality,
+      activo,
+      usuario (
+        id_usuario,
+        nombre_real,
+        pfp
+      ),
+      review (
+        calificacion
+      )
+    `)
+    .eq('activo', 1);
+}
+
+async function getAllConfirmedTutorias() {
+  return await supabase
+    .from('tutoria')
+    .select(`
+      id_tutoria,
+      id_anuncio,
+      anuncio_tutoria (
+        id_anuncio,
+        usuario (
+          id_usuario,
+          nombre_real,
+          pfp
+        )
+      )
+    `)
+    .eq('verificacion_pago', 1);
+}
+
 module.exports = {
   createTutoringAd,
   getTutoringAdById,
   getReviewsByAdId,
-  createTutoria
+  createTutoria,
+  getAllTutoringAds,
+  getAllConfirmedTutorias
 };

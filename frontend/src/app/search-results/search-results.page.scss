@@ -17,7 +17,7 @@
 
 
 .search-results-content {
-  --background: #f4f5f8;
+  --background: var(--ion-color-medium);
   display: flex;
   justify-content: center;  /* horizontal */
   align-items: center;      /* vertical */
@@ -47,21 +47,24 @@
 }
 
 /* CARDS DE TUTORES */
-ion-card {
-  width: 100%;
-  max-width: 500px;   /* 🔥 mismo ancho que antes */
-  margin: 8px 0;
-  border-radius: 10px;
-  --background: #e0e0e0;
-  color: var(--ion-color-primary);;
-}
-/* CARD NORMAL */
 .tutor-card {
   width: 100%;
-  max-width: 500px;
-  margin: 8px 0;
-  border-radius: 16px;
-  transition: 0.3s;
+  border-radius: 14px;
+  background: #e0e0e0;
+  color: var(--ion-color-primary);
+  transition: 0.25s ease;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+
+  animation: tutorGlow 1.5s infinite alternate;
+  transform: scale(0.95);
+}
+
+/* hover igual que home */
+.tutor-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
 }
 
 /* ✨ AURA PREMIUM */
@@ -73,11 +76,16 @@ ion-card {
     0 4px 12px rgba(0,0,0,0.1);
   
 }
-.no-results{
+.no-results {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   font-size: 1.2rem;
   color: #666;
-  margin-top: 20px;
-  align-items: center;
+
+  width: 100%;
+  text-align: center;
 }
 @keyframes glow {
   from {
@@ -118,22 +126,19 @@ ion-card {
   font-size: 14px;
 }
 
-.results-container{
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+
 
 .search-controls {
   width: 100%;
   max-width: 500px;
 
   display: flex;
-  justify-content: center; /* 🔥 centra el botón */
+  flex-direction: column;
+
+  justify-content: center;
   align-items: center;
 
-  margin: 0 auto; /* centra el contenedor */
+  margin: 0 auto;
 }
 .search-button {
   --background: var(--ion-color-tertiary) !important;
@@ -213,7 +218,6 @@ ion-card {
   color: #666;
   margin-top: 2px;
 }
-
 .results-container {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -222,6 +226,7 @@ ion-card {
   max-width: 1000px;
   margin: 0 auto;
 }
+
 @media (max-width: 1200px) {
   .results-container {
     grid-template-columns: repeat(2, 1fr);
@@ -247,13 +252,7 @@ ion-card {
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
 
-.tutor-image {
-  width: 100%;
-  height: 120px;
-  overflow: hidden;
-  border-radius: 10px;
-  margin-bottom: 10px;
-}
+
 
 .tutor-image img {
   width: 100%;

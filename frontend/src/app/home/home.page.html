@@ -1,5 +1,6 @@
 <ion-header>
 
+  <!-- TOP BAR -->
   <ion-toolbar class="custom-toolbar" color="primary">
 
     <ion-buttons slot="start">
@@ -21,14 +22,25 @@
   <!-- SEARCH BAR -->
   <ion-toolbar class="search-toolbar" color="secondary">
     <ion-grid>
-      <ion-row class="ion-align-items-center">
-        <ion-col size="12" size-md="6" offset-md="3">
+      <ion-row class="ion-align-items-center search-row ion-nowrap">
+
+        <ion-col size="9">
           <ion-searchbar
+            [(ngModel)]="searchQuery"
             placeholder="Buscar asignaturas o tutores"
             show-clear-button="focus"
+            (keyup.enter)="searchTutorias()"
             color="medium">
+            
           </ion-searchbar>
         </ion-col>
+
+        <ion-col size="3" class="button-col">
+          <ion-button class="search-button" (click)="searchTutorias()">
+            Buscar
+          </ion-button>
+        </ion-col>
+
       </ion-row>
     </ion-grid>
   </ion-toolbar>
@@ -86,6 +98,8 @@
 </ion-popover>
 
 <ion-content color="medium">
+
+  <!-- EMPTY STATE -->
   <div *ngIf="!hasTutors" class="empty-container">
     <ion-card class="empty-card" color="medium-shade">
       <ion-card-content>
@@ -94,32 +108,120 @@
     </ion-card>
   </div>
 
-  <div *ngIf="hasTutors" class="grid-container">
-    <ion-grid>
-      <ion-row>
-        <ion-col size="12" size-md="6" size-lg="3" *ngFor="let tutor of tutors">
-          <ion-card class="tutor-card">
+  <div *ngIf="hasTutors">
 
-            <div class="image-placeholder"></div>
+    <!-- 🏆 TUTORES DESTACADOS -->
+    <h2 class="section-title">Tutores destacados de la semana</h2>
 
-            <ion-card-header>
-              <ion-card-title>{{ tutor.name }}</ion-card-title>
-            </ion-card-header>
+    <div class="featured-container">
 
-            <ion-card-content>
-              <p class="price">${{ tutor.price }} / hora</p>
-              <p class="desc">{{ tutor.description }}</p>
+      <!-- 🥈 2° LUGAR -->
+      <ion-card
+        class="featured-card small"
+        (click)="goToTutorProfile(second?.id)">
+        <div class="featured-rank"></div>
+        <div class="tutor-image">
+          <img [src]="second?.pfpURL" />
+        </div>
+        <ion-card-content>
+          <ion-card-title color = "primary">{{ second?.nombre }}</ion-card-title>
+          <p>{{ second?.tutoriaCount }} tutorías</p>
+        </ion-card-content>
+      </ion-card>
 
-              <ion-button expand="block">
-                Ver Perfil
-              </ion-button>
-            </ion-card-content>
+      <!-- 🥇 1° LUGAR -->
+      <ion-card
+        class="featured-card big"
+        (click)="goToTutorProfile(first?.id)">
+        <div class="featured-rank" ></div>
+        <div class="tutor-image">
+          <img [src]="first?.pfpURL" />
+        </div>
+        <ion-card-content>
+          <ion-card-title color = "primary">{{ first?.nombre }}</ion-card-title>
+          <p>{{ first?.tutoriaCount }} tutorías</p>
+        </ion-card-content>
+      </ion-card>
 
-          </ion-card>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-  </div> 
+      <!-- 🥉 3° LUGAR -->
+      <ion-card
+        class="featured-card small"
+        (click)="goToTutorProfile(third?.id)">
+        <div class="featured-rank"></div>
+        <div class="tutor-image">
+          <img [src]="third?.pfpURL" />
+        </div>
+        <ion-card-content>
+          <ion-card-title color = "primary">{{ third?.nombre }}</ion-card-title>
+          <p>{{ third?.tutoriaCount }} tutorías</p>
+        </ion-card-content>
+      </ion-card>
+
+    </div>
+
+    <!-- 📚 OTRAS TUTORÍAS -->
+   
+    <h2 class="section-title">Otras tutorías</h2>
+
+    <div class="grid-container">
+      <ion-grid>
+        <ion-row>
+
+          <ion-col
+            size="12"
+            size-md="6"
+            size-lg="4"
+            *ngFor="let tutoria of tutorias">
+
+            <ion-card
+              class="tutor-card"
+              [ngClass]="{ 'premium-card': tutoria.premium }"
+              (click)="goToTutoringAd(tutoria.id)">
+
+              <ion-card-content class="tutor-card-content">
+                <!-- AVATAR -->
+                <div class="tutor-image">
+                  <img [src]="tutoria.pfpURL" />
+                </div>
+
+                <!-- INFO -->
+                <div class="tutor-data">
+
+                  <ion-card-title class="nombre-tutor">
+                    {{ tutoria.name }}
+                  </ion-card-title>
+
+                  <p class="precio">
+                    ${{ tutoria.price }} / hora
+                  </p>
+
+                  <p class="modalidad">
+                    <span style="font-weight: bold;">Modalidad:</span>
+                    {{ tutoria.modalidad }}
+                  </p>
+
+                  <p class="rating">
+                    ⭐ {{ tutoria.calificacion }} / 5
+                  </p>
+
+                  <p class="descripcion">
+                    {{ tutoria.descripcion }}
+                  </p>
+
+                </div>
+
+              </ion-card-content>
+
+            </ion-card>
+
+          </ion-col>
+
+        </ion-row>
+      </ion-grid>
+    </div>
+
+  </div>
+
 </ion-content>
 
 <ion-footer>

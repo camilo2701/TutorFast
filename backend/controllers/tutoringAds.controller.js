@@ -16,7 +16,8 @@ async function createTutoringAd(req, res) {
     titulo,
     descripcion,
     asignatura,
-    boosted
+    boosted,
+    modality
   } = req.body;
 
   if (!precio_por_hora || !titulo || !descripcion || !asignatura) {
@@ -36,6 +37,7 @@ async function createTutoringAd(req, res) {
     asignatura,
     boosted: boosted === true,
     activo: 1,
+    modality,
     id_usuario: user.id_usuario
   };
 
@@ -95,6 +97,7 @@ async function getTutoringAdById(req, res) {
     price: anuncio.precio_por_hora,
     active: anuncio.activo,
     boosted: anuncio.boosted,
+    modality: anuncio.modality,
     tutor: {
       id: anuncio.usuario.id_usuario,
       name: anuncio.usuario.nombre_real,
@@ -144,8 +147,79 @@ async function createTutoria(req, res) {
   });
 }
 
+async function getAllTutoringAds(req, res) {
+  const { data, error } = await TutoringAdsModel.getAllTutoringAds();
+
+  if (error) {
+    return res.status(500).json({ error: error.message });
+  }
+
+  const modalityMap = {
+    0: 'Online',
+    1: 'Presencial',
+    2: 'Presencial y Online'
+  };
+
+  const tutorias = data.map((ad) => {
+    const reviews = ad.review || [];
+
+    const avg =
+      reviews.length > 0
+        ? reviews.reduce((sum, r) => sum + Number(r.calificacion), 0) / reviews.length
+        : 0;
+
+    return {
+      id: ad.id_anuncio,
+      name: ad.titulo,
+      price: ad.precio_por_hora,
+      modalidad: modalityMap[ad.modality] || 'Online',
+      calificacion: Number(avg.toFixed(1)),
+      descripcion: ad.descripcion,
+      premium: ad.boosted === true,
+      pfpURL: ad.usuario?.pfp || 'assets/icon/userpfp.jpg'
+    };
+  });
+
+  res.json(tutorias);
+}
+
+async function getFeaturedTutors(req, res) {
+  const { data, error } = await TutoringAdsModel.getAllConfirmedTutorias();
+
+  if (error) {
+    return res.status(500).json({ error: error.message });
+  }
+
+  const tutorMap = {};
+
+  data.forEach((tutoria) => {
+    const tutor = tutoria.anuncio_tutoria?.usuario;
+
+    if (!tutor) return;
+
+    if (!tutorMap[tutor.id_usuario]) {
+      tutorMap[tutor.id_usuario] = {
+        id: tutor.id_usuario,
+        nombre: tutor.nombre_real,
+        pfpURL: tutor.pfp || 'assets/icon/userpfp.jpg',
+        tutoriaCount: 0
+      };
+    }
+
+    tutorMap[tutor.id_usuario].tutoriaCount++;
+  });
+
+  const featured = Object.values(tutorMap)
+    .sort((a, b) => b.tutoriaCount - a.tutoriaCount)
+    .slice(0, 3);
+
+  res.json(featured);
+}
+
 module.exports = {
   createTutoringAd,
   getTutoringAdById,
-  createTutoria
+  createTutoria,
+  getAllTutoringAds,
+  getFeaturedTutors
 };

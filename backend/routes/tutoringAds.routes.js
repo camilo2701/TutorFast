@@ -4,8 +4,12 @@ const router = express.Router();
 const TutoringAdsController = require('../controllers/tutoringAds.controller');
 const verifyToken = require('../middleware/auth.middleware');
 
+router.get('/', TutoringAdsController.getAllTutoringAds);
+router.get('/featured', TutoringAdsController.getFeaturedTutors);
+
 router.post('/', verifyToken, TutoringAdsController.createTutoringAd);
+router.post('/confirm', verifyToken, TutoringAdsController.createTutoria); 
+
 router.get('/:id', TutoringAdsController.getTutoringAdById);
-router.post('/confirm', verifyToken, TutoringAdsController.createTutoria);
 
 module.exports = router;

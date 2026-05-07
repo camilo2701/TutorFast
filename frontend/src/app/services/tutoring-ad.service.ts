@@ -35,4 +35,11 @@ export class TutoringAdService {
     return this.http.post<any>(`${this.apiUrl}/confirm`, data, { headers });
   }
 
+  getTutorias(): Observable<any[]> {
+    return this.http.get<any[]>(this.apiUrl);
+  }
+
+  getFeaturedTutors(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/featured`);
+  }
 }
