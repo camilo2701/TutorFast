@@ -1,0 +1,689 @@
+<ion-header>
+
+  <ion-toolbar class="custom-toolbar" color="primary">
+
+    <ion-buttons slot="start">
+      <ion-button routerLink="/home">
+        <ion-icon name="home-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title class="custom-title">TutorFast</ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button (click)="openPopover($event)">
+        <ion-icon name="person-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-popover
+  [isOpen]="isPopoverOpen"
+  [event]="popoverEvent"
+  (didDismiss)="isPopoverOpen = false"
+  side="bottom"
+  alignment="start"
+  mode="ios"
+  class="profile-menu-popover"
+>
+
+  <ng-template>
+
+    <div class="profile-menu">
+
+      <!-- 🔓 NO LOGEADO -->
+      <ng-container *ngIf="!isLoggedIn; else loggedInMenu">
+
+        <ion-button expand="block" fill="clear" (click)="goToLogin()" class="profile-menu-btn">
+          <ion-icon name="log-in-outline" slot="start"></ion-icon>
+          Iniciar sesión
+        </ion-button>
+
+      </ng-container>
+
+      <!-- 🔒 LOGEADO -->
+      <ng-template #loggedInMenu>
+
+        <ion-button expand="block" fill="clear" (click)="goToProfile()" class="profile-menu-btn">
+          <ion-icon name="person-outline" slot="start"></ion-icon>
+          Perfil
+        </ion-button>
+
+        <ion-button expand="block" fill="clear" (click)="goToDashboard()" class="profile-menu-btn">
+          <ion-icon name="grid-outline" slot="start"></ion-icon>
+          Dashboard
+        </ion-button>
+
+        <ion-button expand="block" fill="clear" (click)="logout()" class="profile-menu-btn">
+          <ion-icon name="log-out-outline" slot="start"></ion-icon>
+          Cerrar sesión
+        </ion-button>
+
+      </ng-template>
+
+    </div>
+
+  </ng-template>
+
+</ion-popover>
+
+<ion-content color="secondary">
+
+<div class="dashboard">
+
+  <!-- SIDEBAR -->
+  <ion-card class="sidebar-card" color="tertiary">
+
+    <ion-card-content>
+
+      <div 
+        class="menu-item"
+        [class.active]="view === 'profile'"
+        (click)="setView('profile')">
+
+        <ion-icon name="create-outline"></ion-icon>
+        <span>Editar Perfil</span>
+      </div>
+
+      <div 
+        *ngIf="role !== 1"
+        class="menu-item" 
+        [class.active]="view==='reviews'"
+        (click)="setView('reviews')">
+
+        <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
+        <span>Gestionar Reviews</span>
+      </div>
+
+      <div 
+        class="menu-item"
+        [class.active]="view === 'tutorias'"
+        *ngIf="role >= 0"
+        (click)="setView('tutorias')">
+
+        <ion-icon name="school-outline"></ion-icon>
+        <span>Gestionar Tutorías</span>
+      </div>
+
+      <div 
+        *ngIf="role === 2"
+        class="menu-item" 
+        [class.active]="view==='users'"
+        (click)="setView('users')">
+
+        <ion-icon name="people-outline"></ion-icon>
+        <span>Gestionar Usuarios</span>
+      </div>
+
+    </ion-card-content>
+
+  </ion-card>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- PERFIL -->
+    <ion-card *ngIf="view==='profile'" color="light">
+      <ion-card-content>
+
+          <div class="profile-image-section">
+            <ion-label position="stacked" color="primary">Foto de perfil</ion-label>
+            <ion-avatar>
+              <img [src]="user.image || 'assets/icon/userpfp.jpg'"/>
+            </ion-avatar>
+
+            <input type="file" (change)="onImageUpload($event)">
+          </div>
+
+          <!-- NOMBRE -->
+          <ion-item color="light">
+            <ion-label position="stacked" color="primary">Nombre</ion-label>
+            <ion-input 
+              [(ngModel)]="user.name"
+              [placeholder]="currentUser.name">
+            </ion-input>
+          </ion-item>
+
+          <!-- EMAIL -->
+          <ion-item color="light">
+            <ion-label position="stacked" color="primary">Email</ion-label>
+            <ion-input 
+              [(ngModel)]="user.email"
+              [placeholder]="currentUser.email">
+            </ion-input>
+          </ion-item>
+
+          <!-- PASSWORD -->
+          <ion-item color="light">
+            <ion-label position="stacked" color="primary">Nueva contraseña</ion-label>
+            <ion-input type="password" [(ngModel)]="password"></ion-input>
+          </ion-item>
+
+          <ion-item color="light">
+            <ion-label position="stacked" color="primary">Confirmar contraseña</ion-label>
+            <ion-input type="password" [(ngModel)]="confirmPassword"></ion-input>
+          </ion-item>
+
+          <ion-button expand="block" color="tertiary" (click)="confirmUserChanges()">
+            <ion-text color="light">Guardar cambios</ion-text>
+          </ion-button>
+
+        </ion-card-content>
+    </ion-card>
+
+    <!-- REVIEWS -->
+    <ion-card *ngIf="view==='reviews'" color="light">
+      <ion-card-content>
+
+        <ion-list lines="none" class="clean-list">
+
+          <ion-item 
+            *ngFor="let review of paginatedReviews" 
+            lines="none" 
+            color="light"
+            class="clean-item">
+
+            <ion-label>
+              <h2>{{ review.tutorTitle }}</h2>
+
+              <p class="review-stars">
+                <ion-icon 
+                  *ngFor="let s of getReviewStars(review.rating)" 
+                  [name]="s">
+                </ion-icon>
+                {{ review.rating }}
+              </p>
+
+              <p class="ellipsis">{{ review.comment }}</p>
+            </ion-label>
+
+            <ion-button fill="clear" color="danger" (click)="confirmDeletion(review.id)">
+              <ion-icon name="trash-outline"></ion-icon>
+            </ion-button>
+
+          </ion-item>
+
+        </ion-list>
+
+        <div class="pagination">
+          <ion-button (click)="prevReviewsPage()" [disabled]="reviewsPage===1">
+            Anterior
+          </ion-button>
+
+          <span>Página {{ reviewsPage }}</span>
+
+          <ion-button 
+            (click)="nextReviewsPage()" 
+            [disabled]="!hasNextReviewsPage()">
+            Siguiente
+          </ion-button>
+        </div>
+
+      </ion-card-content>
+    </ion-card>
+
+    <!-- =========================
+        🏫 GESTIONAR TUTORIAS
+    ========================= -->
+    <ion-card *ngIf="view==='tutorias'" color="light">
+      <ion-card-content>
+
+        <!-- 👤 USUARIO -->
+        <ng-container *ngIf="role === 0">
+
+          <div class="table-header">
+            <div>ID</div>
+            <div>Tutor</div>
+            <div>Título</div>
+            <div>Monto</div>
+            <div>Método</div>
+            <div>Anuncio</div>
+          </div>
+
+          <div class="table-divider"></div>
+
+          <div class="table-body">
+            <div *ngFor="let t of paginatedBookings" class="table-row">
+
+              <div class="table-cell">{{ t.id }}</div>
+              <div class="table-cell">{{ t.tutor }}</div>
+              <div class="table-cell">{{ t.title }}</div>
+              <div class="table-cell">{{ t.amount }}</div>
+              <div class="table-cell">{{ t.payment }}</div>
+
+              <div class="table-cell link">
+                <a (click)="goToTutoringAd(t.adId)">Ver</a>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="pagination">
+            <ion-button (click)="prevBookingsPage()" [disabled]="bookingsPage===1">
+              Anterior
+            </ion-button>
+
+            <span>Página {{ bookingsPage }}</span>
+
+            <ion-button 
+              (click)="nextBookingsPage()" 
+              [disabled]="!hasNextBookingsPage()">
+              Siguiente
+            </ion-button>
+          </div>
+
+        </ng-container>
+
+
+        <!-- 👨‍🏫 TUTOR -->
+        <ng-container *ngIf="role === 1">
+
+          <!-- CONTRATADAS -->
+          <div class="table-section">
+
+            <h2 class="section-title"><b>Tutorías Contratadas</b></h2>
+
+            <div class="table-header">
+              <div>ID</div>
+              <div>Usuario</div>
+              <div>Monto</div>
+              <div>Fecha</div>
+            </div>
+
+            <div class="table-divider"></div>
+
+            <div class="table-body">
+              <div *ngFor="let t of paginatedBookings" class="table-row">
+
+                <div class="table-cell">{{ t.id }}</div>
+                <div class="table-cell">{{ t.user }}</div>
+                <div class="table-cell">{{ t.amount }}</div>
+                <div class="table-cell">{{ t.date }}</div>
+
+              </div>
+            </div>
+
+            <div class="pagination">
+              <ion-button (click)="prevBookingsPage()" [disabled]="bookingsPage===1">
+                Anterior
+              </ion-button>
+
+              <span>Página {{ bookingsPage }}</span>
+
+              <ion-button (click)="nextBookingsPage()">
+                Siguiente
+              </ion-button>
+            </div>
+
+          </div>
+
+
+          <!-- ANUNCIOS -->
+          <div class="table-section">
+
+            <h2 class="section-title"><b>Anuncios de Tutoría</b></h2>
+
+            <div class="table-header">
+              <div>ID</div>
+              <div>Título</div>
+              <div>Acción</div>
+            </div>
+
+            <div class="table-divider"></div>
+
+            <div class="table-body">
+              <div *ngFor="let a of paginatedAds" class="table-row">
+
+                <div class="table-cell">{{ a.id }}</div>
+                <div class="table-cell">{{ a.title }}</div>
+
+                <div class="table-cell link">
+                  <a (click)="goToTutoringAd(a.id)">Ver</a>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="pagination">
+              <ion-button (click)="prevAdsPage()" [disabled]="adsPage===1">
+                Anterior
+              </ion-button>
+
+              <span>Página {{ adsPage }}</span>
+
+              <ion-button 
+                (click)="nextAdsPage()" 
+                [disabled]="!hasNextAdsPage()">
+                Siguiente
+              </ion-button>
+            </div>
+
+          </div>
+
+          <!-- BOTÓN CREAR ANUNCIO -->
+          <div class="create-ad-container">
+            <ion-button
+              color="tertiary"
+              fill="solid"
+              class="create-ad-btn"
+              routerLink="/create-tutoring-ad">
+
+              <ion-label color="light">Crear un Anuncio de Tutoría</ion-label>
+
+            </ion-button>
+          </div>
+
+        </ng-container>
+
+
+        <!-- 👑 ADMIN -->
+        <ng-container *ngIf="role === 2">
+
+          <!-- 🔍 BUSCADOR -->
+          <ng-container *ngIf="!showResults">
+
+            <ion-item color="light">
+              <ion-input 
+                [(ngModel)]="searchBookings" 
+                placeholder="Buscar tutorías contratadas (nombre Estudiante o Tutor)"
+                (keyup.enter)="searchBookingsFn()">
+              </ion-input>
+
+              <ion-button (click)="searchBookingsFn()">
+                Buscar
+              </ion-button>
+            </ion-item>
+
+            <ion-item color="light">
+              <ion-input 
+                [(ngModel)]="searchAds" 
+                placeholder="Buscar anuncios (Título o nombre de Tutor)"
+                (keyup.enter)="searchAdsFn()">
+              </ion-input>
+
+              <ion-button (click)="searchAdsFn()">
+                Buscar
+              </ion-button>
+            </ion-item>
+
+          </ng-container>
+
+
+          <!-- 📊 RESULTADOS -->
+          <ng-container *ngIf="showResults">
+
+            <div class="back-button">
+              <ion-button color="tertiary" (click)="resetSearch()">
+                <ion-text color="light">Volver</ion-text>
+              </ion-button>
+            </div>
+
+            <!-- CONTRATADAS -->
+            <div class="table-section" *ngIf="filteredBookings.length">
+
+              <h3 class="section-title">Tutorías Contratadas</h3>
+
+              <div class="table-header">
+                <div>ID</div>
+                <div>Usuario</div>
+                <div>Monto</div>
+                <div>Fecha</div>
+              </div>
+
+              <div class="table-divider"></div>
+
+              <div class="table-body">
+                <div *ngFor="let t of filteredBookings" class="table-row">
+                  <div class="table-cell">{{ t.id }}</div>
+                  <div class="table-cell">{{ t.user }}</div>
+                  <div class="table-cell">{{ t.amount }}</div>
+                  <div class="table-cell">{{ t.date }}</div>
+                </div>
+              </div>
+
+            </div>
+
+
+            <!-- ANUNCIOS -->
+            <div class="table-section" *ngIf="filteredAds.length">
+
+              <h3 class="section-title">Anuncios de Tutoría</h3>
+
+              <div class="table-header">
+                <div>ID</div>
+                <div>Título</div>
+                <div>Acción</div>
+              </div>
+
+              <div class="table-divider"></div>
+
+              <div class="table-body">
+                <div *ngFor="let a of filteredAds" class="table-row">
+
+                  <div class="table-cell">{{ a.id }}</div>
+                  <div class="table-cell">{{ a.title }}</div>
+
+                  <div class="table-cell link">
+                    <a (click)="goToTutoringAd(a.id)">Ver</a>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+
+          </ng-container>
+
+        </ng-container>
+
+      </ion-card-content>
+    </ion-card>
+
+    <!-- =========================
+        👥 GESTIONAR USUARIOS
+    ========================= -->
+    <ion-card *ngIf="view==='users'" color="light">
+
+      <ion-card-content>
+
+        <!-- 🔍 BUSCADOR -->
+        <ion-item color="light">
+          <ion-input 
+            [(ngModel)]="searchUsers"
+            placeholder="Buscar por nombre o username"
+            (keyup.enter)="searchUsersFn()">
+          </ion-input>
+
+          <ion-button color="tertiary" (click)="searchUsersFn()">
+            <ion-text color="light">Buscar</ion-text>
+          </ion-button>
+        </ion-item>
+
+        <!-- RESULTADOS -->
+        <ng-container *ngIf="showUserResults">
+
+          <!-- 🔹 HEADER -->
+          <div class="table-header users">
+            <div>Foto</div>
+            <div>Nombre</div>
+            <div>Username</div>
+            <div>Perfil</div>
+            <div></div>
+          </div>
+
+          <div class="table-divider"></div>
+
+          <!-- 🔹 TABLA -->
+          <div class="table-body">
+
+            <div *ngFor="let u of paginatedUsers" class="table-row users">
+
+              <!-- FOTO -->
+              <div class="table-cell">
+                <ion-avatar>
+                  <img [src]="u.image">
+                </ion-avatar>
+              </div>
+
+              <!-- NOMBRE -->
+              <div class="table-cell">{{ u.name }}</div>
+
+              <!-- USERNAME -->
+              <div class="table-cell">{{ u.username }}</div>
+
+              <!-- LINK -->
+              <div class="table-cell link">
+                <a (click)="goToUserProfile(u.id)">Ver perfil</a>
+              </div>
+
+              <!-- MENU -->
+              <div class="table-cell">
+
+                <ion-button 
+                  *ngIf="canManageUser(u)"
+                  fill="clear" 
+                  (click)="openUserMenu($event, u)"
+                >
+                  <ion-icon name="ellipsis-vertical-outline"></ion-icon>
+                </ion-button>
+
+              </div>
+            </div>
+
+            <ion-popover
+              [isOpen]="isUserMenuOpen"
+              [event]="userMenuEvent"
+              (didDismiss)="closeUserMenu()"
+              class="user-menu-popover"
+            >
+
+              <ng-template>
+
+                <div class="user-menu">
+
+                  <ion-button fill="clear" expand="block" (click)="handleEdit()">
+                    <ion-icon name="create-outline" slot="start"></ion-icon>
+                    Editar usuario
+                  </ion-button>
+
+                  <ion-button fill="clear" expand="block" (click)="handleDelete()">
+                    <ion-icon name="trash-outline" slot="start"></ion-icon>
+                    Eliminar usuario
+                  </ion-button>
+
+                  <ion-button fill="clear" expand="block" (click)="handleDeleteImage()">
+                    <ion-icon name="image-outline" slot="start"></ion-icon>
+                    Eliminar foto
+                  </ion-button>
+
+                </div>
+
+              </ng-template>
+            </ion-popover>
+          </div>
+
+          <!-- PAGINACIÓN -->
+          <div class="pagination">
+            <ion-button (click)="prevUsersPage()" [disabled]="usersPage===1">
+              Anterior
+            </ion-button>
+
+            <span>Página {{ usersPage }}</span>
+
+            <ion-button 
+              (click)="nextUsersPage()" 
+              [disabled]="!hasNextUsersPage()">
+              Siguiente
+            </ion-button>
+          </div>
+
+        </ng-container>
+
+      </ion-card-content>
+    </ion-card>
+
+    <!-- =========================
+        EDITAR USUARIO
+    ========================= -->
+    <ion-modal [isOpen]="isEditModalOpen" (didDismiss)="closeEditModal()">
+
+      <ng-template>
+
+        <ion-content color="light">
+
+          <ion-card class="edit-user-card" color="light">
+
+            <ion-card-content>
+
+              <h2>Editar Usuario</h2>
+
+              <ion-item color="light">
+                <ion-label position="stacked">RUT</ion-label>
+                <ion-input [(ngModel)]="editingUser.rut"></ion-input>
+              </ion-item>
+
+              <ion-item color="light">
+                <ion-label position="stacked">Nombre</ion-label>
+                <ion-input [(ngModel)]="editingUser.name"></ion-input>
+              </ion-item>
+
+              <ion-item color="light">
+                <ion-label position="stacked">Username</ion-label>
+                <ion-input [(ngModel)]="editingUser.username"></ion-input>
+              </ion-item>
+
+              <ion-item color="light">
+                <ion-label position="stacked">Email</ion-label>
+                <ion-input [(ngModel)]="editingUser.email"></ion-input>
+              </ion-item>
+
+              <ion-item color="light" *ngIf="editingUser?.role === 1">
+                <ion-label>Suscripción activa</ion-label>
+                <ion-toggle [(ngModel)]="editingUser.subscription"></ion-toggle>
+              </ion-item>
+
+              <ion-button expand="block" color="tertiary" (click)="confirmUserChanges(editingUser)">
+                <ion-text color="light">Guardar</ion-text>
+              </ion-button>
+
+              <ion-button expand="block" fill="outline" (click)="closeEditModal()">
+                Cancelar
+              </ion-button>
+
+            </ion-card-content>
+
+          </ion-card>
+
+        </ion-content>
+
+      </ng-template>
+
+    </ion-modal>
+
+  </div>
+
+</div>
+
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar class="footer-toolbar" color="medium">
+
+    <div class="footer-container">
+
+      <!-- LEFT -->
+      <p class="footer-title">TutorFast 2026</p>
+
+      <!-- RIGHT -->
+      <div class="footer-links">
+        <a routerLink="/terms-services">Términos y servicios</a>
+        <a routerLink="/privacy-policy">Política de privacidad</a>
+        <a routerLink="/help-center">Centro de ayuda</a>
+      </div>
+
+    </div>
+
+  </ion-toolbar>
+</ion-footer>

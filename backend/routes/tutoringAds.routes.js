@@ -10,6 +10,10 @@ router.get('/featured', TutoringAdsController.getFeaturedTutors);
 router.post('/', verifyToken, TutoringAdsController.createTutoringAd);
 router.post('/confirm', verifyToken, TutoringAdsController.createTutoria); 
 
+router.get('/:id/booked', verifyToken, TutoringAdsController.checkUserBookedAd);
+router.post('/:id/reviews', verifyToken, TutoringAdsController.createReview);
+router.delete('/:id', verifyToken, TutoringAdsController.deleteTutoringAd);
+
 router.get('/:id', TutoringAdsController.getTutoringAdById);
 
 module.exports = router;

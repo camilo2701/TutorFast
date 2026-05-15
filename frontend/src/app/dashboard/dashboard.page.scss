@@ -1,0 +1,399 @@
+.custom-toolbar {
+  --min-height: 42px;
+}
+
+/* FORCE TRUE CENTERING */
+.custom-title {
+  width: 100%;
+  text-align: center;
+  padding: 0;
+}
+
+/* FIX ICON ALIGNMENT */
+.profile-col {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+/* REMOVE DEFAULT BUTTON PADDING OFFSET */
+.profile-col ion-button {
+  margin: 0;
+}
+
+.footer-toolbar {
+  padding: 12px 20px;
+}
+
+.footer-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+/* LEFT TEXT */
+.footer-title {
+  margin: 0;
+  font-size: 14px;
+}
+
+/* RIGHT LINKS */
+.footer-links {
+  display: flex;
+  gap: 24px; // spacing between links
+}
+
+.footer-links a {
+  text-decoration: none;
+  font-size: 14px;
+}
+
+/* 🔥 limpia el popover */
+.profile-menu-popover::part(content) {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  padding: 0 !important;
+
+  margin-top: 6px;
+  margin-left: -10px; /* 👈 empuja hacia la izquierda */
+
+  overflow: hidden !important;
+}
+
+/* ❌ sin flecha */
+.profile-menu-popover::part(arrow) {
+  display: none !important;
+}
+
+/* 📦 contenedor */
+.profile-menu {
+  background: var(--ion-color-tertiary);
+  border-radius: 2px;
+
+  padding: 2px;
+  width: 200px;
+
+  display: flex;
+  flex-direction: column;
+}
+
+/* 🔘 botones */
+.profile-menu-btn {
+  --background: transparent;
+  --background-hover: rgba(255, 255, 255, 0.08);
+  --background-activated: rgba(255, 255, 255, 0.12);
+  --color: white;
+
+  justify-content: flex-start;
+  text-transform: none;
+
+  margin: 1px 0;
+  border-radius: 1px;
+
+  font-size: 15px;
+}
+
+/* 🎯 iconos */
+.profile-menu-btn ion-icon {
+  color: white;
+  font-size: 18px;
+  margin-right: 8px;
+}
+
+.dashboard {
+  display: flex;
+  min-height: calc(100vh - 120px); // 🔥 evita que se corte (header + footer)
+  gap: 16px;
+}
+
+/* SIDEBAR COMO CARD */
+.sidebar-card {
+  width: 240px;
+  margin: 20px 0 20px 20px;
+
+  display: flex;
+  flex-direction: column;
+
+  height: fit-content; // 🔥 evita bug de corte
+}
+
+.sidebar-card ion-card-content {
+  padding: 0;
+}
+
+/* ITEMS */
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+
+/* hover normal */
+.menu-item:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+/* 🔥 ACTIVO (invertido) */
+.menu-item.active {
+  background: var(--ion-color-light);
+  color: var(--ion-color-tertiary);
+}
+
+/* icono también cambia */
+.menu-item.active ion-icon {
+  color: var(--ion-color-tertiary);
+}
+
+/* icono normal */
+.menu-item ion-icon {
+  color: white;
+}
+/* CONTENT */
+.content {
+  flex: 1;
+  padding: 20px;
+}
+
+/* =========================
+   🔹 CONTENT
+========================= */
+
+.content {
+  flex: 1;
+  padding: 20px;
+}
+
+
+/* =========================
+   🔹 REVIEWS (LIMPIAS)
+========================= */
+
+.clean-list {
+  background: transparent !important;
+  padding: 0;
+}
+
+.clean-item {
+  --background: transparent !important;
+  --inner-border-width: 0 !important;
+  --border-width: 0 !important;
+  --highlight-height: 0 !important;
+
+  margin-bottom: 8px;
+  border-radius: 8px;
+}
+
+/* estrellas */
+.review-stars ion-icon {
+  color: var(--ion-color-tertiary);
+  margin-right: 2px;
+}
+
+/* texto largo */
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+/* =========================
+   🔹 PAGINACIÓN
+========================= */
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 14px;
+}
+
+
+/* =========================
+   🔹 TABLAS (BASE)
+========================= */
+
+.table-section {
+  margin-bottom: 30px;
+}
+
+.section-title {
+  color: var(--ion-color-primary);
+  margin-bottom: 10px;
+}
+
+/* HEADER GENÉRICO */
+.table-header {
+  display: grid;
+  padding: 12px 16px;
+  font-weight: 600;
+  color: var(--ion-color-primary);
+}
+
+/* DIVISOR */
+.table-divider {
+  height: 2px;
+  background: var(--ion-color-primary);
+  margin-bottom: 8px;
+}
+
+/* BODY */
+.table-body {
+  width: 100%;
+}
+
+/* ROW */
+.table-row {
+  display: grid;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+  transition: 0.2s;
+}
+
+/* hover fila */
+.table-row:hover {
+  background: rgba(0,0,0,0.03);
+}
+
+/* CELDAS */
+.table-cell {
+  color: var(--ion-color-primary);
+  font-size: 14px;
+}
+
+/* LINK */
+.table-cell.link a {
+  color: var(--ion-color-tertiary);
+  text-decoration: none;
+}
+
+
+/* =========================
+   🔹 CONFIGURACIÓN POR TABLA
+========================= */
+
+/* 👤 USUARIO (6 columnas) */
+.table-header,
+.table-row {
+  grid-template-columns: 80px 1.2fr 1.2fr 120px 120px 100px;
+}
+
+/* 👨‍🏫 TUTOR - CONTRATADAS (4 columnas) */
+.table-row.bookings,
+.table-header.bookings {
+  grid-template-columns: 80px 1.5fr 120px 140px;
+}
+
+/* 👨‍🏫 TUTOR - ANUNCIOS (3 columnas) */
+.table-row.ads,
+.table-header.ads {
+  grid-template-columns: 80px 1fr 100px;
+}
+
+
+/* =========================
+   🔹 BOTÓN VOLVER (ADMIN)
+========================= */
+
+.back-button {
+  margin-bottom: 15px;
+}
+
+/* =========================
+   🔹 BOTÓN CREAR ANUNCIO
+========================= */
+
+.create-ad-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.create-ad-btn {
+  --color: rgba(255, 255, 255, 0.03);
+  font-weight: 600;
+
+  min-width: 260px;
+}
+
+/* =========================
+   🔹 GESTIONARR USUARIOS (ADMIN)
+========================= */
+/* USERS TABLE */
+.table-header.users,
+.table-row.users {
+  grid-template-columns: 80px 1.5fr 1.5fr 120px 60px;
+}
+
+/* avatar */
+.table-cell ion-avatar {
+  width: 40px;
+  height: 40px;
+}
+
+/* menu popover */
+.user-menu-popover::part(content) {
+  background: var(--ion-color-tertiary);
+  border-radius: 6px;
+  padding: 4px;
+}
+
+.user-menu ion-button {
+  --color: white;
+  justify-content: flex-start;
+}
+
+/* edit card */
+.edit-user-card {
+  margin-top: 20px;
+}
+
+/* =========================
+   🔹 RESPONSIVE
+========================= */
+
+@media (max-width: 768px) {
+
+  /* ocultamos header */
+  .table-header {
+    display: none;
+  }
+
+  .table-row {
+    grid-template-columns: 1fr !important;
+    gap: 6px;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 8px;
+    margin-bottom: 10px;
+  }
+
+  .table-cell {
+    display: block;
+  }
+
+  .table-cell::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: var(--ion-color-primary);
+    display: block;
+  }
+
+}
+
+.table-cell.link a {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.table-cell.link a:hover {
+  opacity: 0.8;
+}

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { Router, RouterModule } from '@angular/router';
+import { AlertController } from '@ionic/angular';
 
 import { addIcons } from 'ionicons';
 import { 
@@ -16,7 +17,10 @@ import {
   gridOutline,
   star, 
   starHalf, 
-  starOutline 
+  starOutline,
+  ellipsisVertical,
+  trashOutline,
+  createOutline
 } from 'ionicons/icons';
 
 import { ActivatedRoute } from '@angular/router';
@@ -55,7 +59,10 @@ interface Review {
 
 export class TutoringAdPage implements OnInit {
 
-  constructor(private route: ActivatedRoute, private router: Router, private tutoringAdService: TutoringAdService) { 
+  constructor(private route: ActivatedRoute,
+              private router: Router,
+              private tutoringAdService: TutoringAdService,
+              private alertCtrl: AlertController) { 
     addIcons({
       'home-outline': homeOutline,
       'person-circle-outline': personCircleOutline,
@@ -67,9 +74,23 @@ export class TutoringAdPage implements OnInit {
       'grid-outline': gridOutline,
       'star': star,
       'star-half': starHalf,
-      'star-outline': starOutline
+      'star-outline': starOutline,
+      'ellipsis-vertical': ellipsisVertical,
+      'trash-outline': trashOutline,
+      'create-outline': createOutline
     });
   }
+
+  role: number = -1;
+  hasBookedThisTutor: boolean = false;
+  isTutoringMenuOpen = false;
+  tutoringMenuEvent: Event | null = null;
+  loggedUserId: number | null = null;
+
+  isReviewModalOpen = false;
+  reviewText = '';
+  selectedReviewRating = 0;
+  reviewError = '';
 
   ad: any = {};
   tutor: Tutor = {} as Tutor;
@@ -86,11 +107,58 @@ export class TutoringAdPage implements OnInit {
 
   ngOnInit() {
     this.checkSession();
+    this.loadLoggedUserRole();
+
     const id = Number(this.route.snapshot.paramMap.get('id'));
 
     if (id) {
       this.loadTutoringAd(id);
+      this.checkIfUserBookedAd(id);
     }
+  }
+
+  loadLoggedUserRole() {
+    const user = localStorage.getItem('user');
+
+    if (!user) {
+      this.role = -1;
+      this.loggedUserId = null;
+      return;
+    }
+
+    const parsedUser = JSON.parse(user);
+
+    this.role = parsedUser.rol;
+    this.loggedUserId = parsedUser.id_usuario;
+  }
+
+  canManageTutoringAd(): boolean {
+    const isAdmin = this.role === 2;
+
+    const isOwnerTutor =
+      this.role === 1 &&
+      this.loggedUserId !== null &&
+      Number(this.ad?.tutor?.id) === Number(this.loggedUserId);
+
+    return isAdmin || isOwnerTutor;
+  }
+
+  checkIfUserBookedAd(id: number) {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      this.hasBookedThisTutor = false;
+      return;
+    }
+
+    this.tutoringAdService.checkUserBookedAd(id).subscribe({
+      next: (response) => {
+        this.hasBookedThisTutor = response.hasBooked;
+      },
+      error: () => {
+        this.hasBookedThisTutor = false;
+      }
+    });
   }
 
   checkSession() {
@@ -159,6 +227,8 @@ export class TutoringAdPage implements OnInit {
     this.tutoringAdService.confirmTutoria(payload).subscribe({
       next: () => {
         alert('Tutoría confirmada correctamente.');
+        this.hasBookedThisTutor = true;
+        this.closeBooking();
       },
       error: (error) => {
         alert(error.error?.error || 'Error al confirmar tutoría.');
@@ -220,7 +290,29 @@ export class TutoringAdPage implements OnInit {
     return stars;
   }
 
-  openBooking() {
+  async openBooking() {
+    if (!this.isLoggedIn) {
+      const alert = await this.alertCtrl.create({
+        header: 'Acceso requerido',
+        message: 'Debes iniciar sesión para contactar un tutor.',
+        buttons: ['OK']
+      });
+
+      await alert.present();
+      return;
+    }
+
+    if (this.role !== 0) {
+      const alert = await this.alertCtrl.create({
+        header: 'Acción no permitida',
+        message: 'Solo los estudiantes pueden contratar tutorías.',
+        buttons: ['OK']
+      });
+
+      await alert.present();
+      return;
+    }
+
     this.isBookingOpen = true;
   }
 
@@ -237,6 +329,16 @@ export class TutoringAdPage implements OnInit {
   closePopover() {
     this.isPopoverOpen = false;
     this.popoverEvent = null;
+  }
+
+  openTutoringMenu(event: Event) {
+    this.tutoringMenuEvent = event;
+    this.isTutoringMenuOpen = true;
+  }
+
+  closeTutoringMenu() {
+    this.isTutoringMenuOpen = false;
+    this.tutoringMenuEvent = null;
   }
 
   goToLogin() {
@@ -283,4 +385,126 @@ export class TutoringAdPage implements OnInit {
     }, 100);
   }
 
+  async openReviewModal() {
+    if (!this.isLoggedIn) {
+      const alert = await this.alertCtrl.create({
+        header: 'Acceso requerido',
+        message: 'Debes iniciar sesión para escribir una review.',
+        buttons: ['OK']
+      });
+
+      await alert.present();
+      return;
+    }
+
+    if (this.role !== 0) {
+      const alert = await this.alertCtrl.create({
+        header: 'Acción no permitida',
+        message: 'Solo los estudiantes pueden escribir reviews.',
+        buttons: ['OK']
+      });
+
+      await alert.present();
+      return;
+    }
+
+    if (!this.hasBookedThisTutor) {
+      const alert = await this.alertCtrl.create({
+        header: 'Review no disponible',
+        message: 'Debes haber contratado esta tutoría para dejar una review.',
+        buttons: ['OK']
+      });
+
+      await alert.present();
+      return;
+    }
+
+    this.reviewText = '';
+    this.selectedReviewRating = 0;
+    this.reviewError = '';
+    this.isReviewModalOpen = true;
+  }
+
+  closeReviewModal() {
+    this.isReviewModalOpen = false;
+  }
+
+  selectRating(rating: number) {
+    this.selectedReviewRating = rating;
+  }
+
+  submitReview() {
+    if (!this.reviewText.trim()) {
+      this.reviewError = 'Debes escribir una review.';
+      return;
+    }
+
+    if (this.selectedReviewRating === 0) {
+      this.reviewError = 'Debes seleccionar una calificación.';
+      return;
+    }
+
+    const payload = {
+      calificacion: this.selectedReviewRating,
+      contenido_review: this.reviewText.trim()
+    };
+
+    this.tutoringAdService.createReview(this.ad.id, payload).subscribe({
+      next: async () => {
+        const alert = await this.alertCtrl.create({
+          header: 'Éxito',
+          message: 'Review enviada correctamente.',
+          buttons: ['OK']
+        });
+
+        await alert.present();
+
+        this.closeReviewModal();
+        this.loadTutoringAd(this.ad.id);
+      },
+      error: async (error) => {
+        const alert = await this.alertCtrl.create({
+          header: 'Error',
+          message: error.error?.error || 'No se pudo enviar la review.',
+          buttons: ['OK']
+        });
+
+        await alert.present();
+      }
+    });
+  }
+
+  async deleteTutoring() {
+    this.closeTutoringMenu();
+
+    const confirmAlert = await this.alertCtrl.create({
+      header: 'Confirmar',
+      message: '¿Eliminar este anuncio? También se eliminarán sus tutorías y reviews asociadas.',
+      buttons: [
+        { text: 'No', role: 'cancel' },
+        {
+          text: 'Sí',
+          handler: () => {
+            this.tutoringAdService.deleteTutoringAd(this.ad.id).subscribe({
+              next: () => {
+                this.router.navigate(['/home']);
+              },
+              error: async (error) => {
+                const alert = await this.alertCtrl.create({
+                  header: 'Error',
+                  message: error.error?.error || 'No se pudo eliminar el anuncio.',
+                  buttons: ['OK']
+                });
+
+                await alert.present();
+              }
+            });
+          }
+        }
+      ]
+    });
+
+    await confirmAlert.present();
+  }
+  
 }

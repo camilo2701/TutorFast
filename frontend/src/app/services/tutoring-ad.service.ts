@@ -42,4 +42,35 @@ export class TutoringAdService {
   getFeaturedTutors(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/featured`);
   }
+
+  checkUserBookedAd(id: number): Observable<any> {
+    const token = localStorage.getItem('token');
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    return this.http.get<any>(`${this.apiUrl}/${id}/booked`, { headers });
+  }
+
+  createReview(id: number, data: any): Observable<any> {
+    const token = localStorage.getItem('token');
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    return this.http.post<any>(`${this.apiUrl}/${id}/reviews`, data, { headers });
+  }
+
+  deleteTutoringAd(id: number): Observable<any> {
+    const token = localStorage.getItem('token');
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    return this.http.delete<any>(`${this.apiUrl}/${id}`, { headers });
+  }
+
 }

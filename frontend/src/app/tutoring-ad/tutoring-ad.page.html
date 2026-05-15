@@ -97,6 +97,42 @@
                 </ion-label>
               </ion-item>
 
+              <div class="menu-button-container" *ngIf="canManageTutoringAd()">
+
+                <ion-button
+                  fill="clear"
+                  color="primary"
+                  (click)="openTutoringMenu($event)">
+
+                  <ion-icon name="ellipsis-vertical"></ion-icon>
+
+                </ion-button>
+
+              </div>
+
+              <ion-popover
+                [isOpen]="isTutoringMenuOpen"
+                [event]="tutoringMenuEvent"
+                (didDismiss)="closeTutoringMenu()"
+                side="bottom"
+                alignment="end"
+                mode="ios">
+
+                <ng-template>
+                  <ion-button
+                    fill="clear"
+                    color="danger"
+                    class="delete-tutoring-btn"
+                    (click)="deleteTutoring()">
+
+                    <ion-icon slot="start" name="trash-outline"></ion-icon>
+                    Eliminar Tutoría
+
+                  </ion-button>
+                </ng-template>
+
+              </ion-popover>
+
               <!-- PRECIO -->
               <h2 class="price">
                 {{ ad.price | currency:'CLP':'symbol':'1.0-0' }}
@@ -131,10 +167,23 @@
                   </span>
                 </ion-col>
 
-                <ion-col>
+                <ion-col class="reviews-info">
+
                   <ion-text color="primary">
                     ({{ ad.reviewCount }} reviews)
                   </ion-text>
+
+                  <ion-button
+                    fill="clear"
+                    color="tertiary"
+                    class="review-btn"
+                    (click)="openReviewModal()">
+
+                    <ion-icon slot="start" name="create-outline"></ion-icon>
+                    <b>Review</b>
+
+                  </ion-button>
+
                 </ion-col>
 
               </ion-row>
@@ -145,6 +194,83 @@
         </ion-col>
       </ion-row>
     </ion-grid>
+
+    <ion-modal
+      [isOpen]="isReviewModalOpen"
+      (didDismiss)="closeReviewModal()">
+
+      <ng-template>
+
+        <ion-content class="review-modal-content">
+
+          <ion-card class="review-card" color="light">
+
+            <ion-card-header>
+              <ion-card-title color="primary">
+                Escribir Review
+              </ion-card-title>
+            </ion-card-header>
+
+            <ion-card-content>
+
+              <div class="review-stars-selector">
+
+                <ion-icon
+                  *ngFor="let star of [1,2,3,4,5]"
+                  [name]="star <= selectedReviewRating ? 'star' : 'star-outline'"
+                  class="clickable-star"
+                  (click)="selectRating(star)">
+                </ion-icon>
+
+              </div>
+
+              <ion-textarea
+                [(ngModel)]="reviewText"
+                maxlength="150"
+                counter="true"
+                placeholder="Escribe tu review..."
+                class="review-textarea">
+              </ion-textarea>
+
+              <p *ngIf="reviewError" class="review-error">
+                {{ reviewError }}
+              </p>
+
+              <div class="review-buttons">
+
+                <ion-button
+                  expand="block"
+                  color="primary"
+                  (click)="submitReview()">
+
+                  <ion-label color="light">
+                    Enviar Review
+                  </ion-label>
+
+                </ion-button>
+
+                <ion-button
+                  expand="block"
+                  color="tertiary"
+                  (click)="closeReviewModal()">
+
+                  <ion-label color="light">
+                    Cancelar
+                  </ion-label>
+
+                </ion-button>
+
+              </div>
+
+            </ion-card-content>
+
+          </ion-card>
+
+        </ion-content>
+
+      </ng-template>
+
+    </ion-modal>
 
     <!-- DESCRIPTION -->
     <ion-card mode="ios" color="light">

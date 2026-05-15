@@ -275,3 +275,138 @@ ion-segment-button {
   font-size: 18px;
   margin-right: 8px;
 }
+
+
+/* INFO CARD */
+
+.info-card {
+  position: relative;
+}
+
+.menu-button-container {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  z-index: 10;
+}
+
+/* DELETE BUTTON */
+
+.delete-tutoring-btn {
+  --background: rgbargba(255, 255, 255, 0.4)
+  --color: var(--ion-color-danger);
+
+  text-transform: none;
+  font-weight: 600;
+}
+
+/* RATING CARD COMPACT */
+
+.rating-card ion-card-content {
+  padding-top: 2px;
+  padding-bottom: 2px;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.rating-card ion-row {
+  min-height: unset;
+  align-items: center;
+}
+
+/* evita altura extra del botón */
+.review-btn {
+  margin: 0;
+  height: 32px;
+
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+/* centra mejor todo */
+.reviews-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding-left: 4px;
+}
+
+/* REVIEWS HEADER */
+
+.reviews-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.review-btn {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+/* REVIEW MODAL */
+
+.review-modal-content {
+  --background: rgba(0, 0, 0, 0.4);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.review-card {
+  width: 100%;
+  max-width: 420px;
+  margin: auto;
+  border-radius: 16px;
+}
+
+/* STARS */
+
+.review-stars-selector {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+
+  margin-bottom: 18px;
+}
+
+.clickable-star {
+  font-size: 32px;
+  color: var(--ion-color-tertiary);
+  cursor: pointer;
+}
+
+/* TEXTAREA */
+
+.review-textarea {
+  --background: #f4f4f4;
+  --color: var(--ion-color-primary);
+
+  border-radius: 12px;
+
+  padding: 10px;
+
+  max-height: 180px;
+
+  overflow-y: auto;
+}
+
+/* ERROR */
+
+.review-error {
+  color: var(--ion-color-danger);
+  font-size: 14px;
+  margin-top: 8px;
+}
+
+/* BUTTONS */
+
+.review-buttons {
+  margin-top: 20px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}

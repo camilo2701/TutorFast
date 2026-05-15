@@ -35,3 +35,26 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import '@ionic/angular/css/palettes/dark.system.css';
+
+ion-alert.custom-alert {
+  
+  --background: #ffffff !important;
+  --color: #000000 !important;
+
+  .alert-wrapper {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  .alert-head h2 {
+    color: #000000 !important;
+  }
+
+  .alert-message {
+    color: #000000 !important;
+  }
+
+  .alert-button {
+    color: var(--ion-color-primary) !important;
+  }
+}

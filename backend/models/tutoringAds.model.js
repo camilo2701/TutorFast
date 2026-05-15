@@ -95,11 +95,63 @@ async function getAllConfirmedTutorias() {
     .eq('verificacion_pago', 1);
 }
 
+async function deleteReviewsByAdId(idAnuncio) {
+  return await supabase
+    .from('review')
+    .delete()
+    .eq('id_anuncio', idAnuncio);
+}
+
+async function deleteTutoriasByAdId(idAnuncio) {
+  return await supabase
+    .from('tutoria')
+    .delete()
+    .eq('id_anuncio', idAnuncio);
+}
+
+async function deleteTutoringAd(idAnuncio) {
+  return await supabase
+    .from('anuncio_tutoria')
+    .delete()
+    .eq('id_anuncio', idAnuncio);
+}
+
+async function checkUserBookedAd(idUsuario, idAnuncio) {
+  return await supabase
+    .from('tutoria')
+    .select('id_tutoria')
+    .eq('id_usuario', idUsuario)
+    .eq('id_anuncio', idAnuncio)
+    .eq('verificacion_pago', 1);
+}
+
+async function createReview(reviewData) {
+  return await supabase
+    .from('review')
+    .insert([reviewData])
+    .select()
+    .single();
+}
+
+async function checkUserReviewedAd(idUsuario, idAnuncio) {
+  return await supabase
+    .from('review')
+    .select('id_review')
+    .eq('id_usuario', idUsuario)
+    .eq('id_anuncio', idAnuncio);
+}
+
 module.exports = {
   createTutoringAd,
   getTutoringAdById,
   getReviewsByAdId,
   createTutoria,
   getAllTutoringAds,
-  getAllConfirmedTutorias
+  getAllConfirmedTutorias,
+  deleteReviewsByAdId,
+  deleteTutoriasByAdId,
+  deleteTutoringAd,
+  checkUserBookedAd,
+  createReview,
+  checkUserReviewedAd
 };

@@ -4,6 +4,7 @@ require('dotenv').config();
 
 const usersRoutes = require('./routes/users.routes');
 const tutoringAdsRoutes = require('./routes/tutoringAds.routes');
+const dashboardRoutes = require('./routes/dashboard.routes');
 
 const app = express();
 
@@ -12,6 +13,7 @@ app.use(express.json());
 
 app.use('/api/users', usersRoutes);
 app.use('/api/tutoring-ads', tutoringAdsRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 app.get('/', (req, res) => {
   res.send('Backend TutorFast funcionando');
