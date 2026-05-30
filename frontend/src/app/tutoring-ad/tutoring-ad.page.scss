@@ -9,6 +9,15 @@
   padding: 0;
 }
 
+.header-logo {
+  height: 46px; /* ajusta el tamaño */
+  width: auto;
+
+  display: block;
+  margin: 0 auto;
+  object-fit: contain;
+}
+
 /* FIX ICON ALIGNMENT */
 .profile-col {
   display: flex;

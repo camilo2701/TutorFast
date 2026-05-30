@@ -31,6 +31,15 @@ ion-toolbar.top-bar {
   padding: 0;
 }
 
+.header-logo {
+  height: 46px; /* ajusta el tamaño */
+  width: auto;
+
+  display: block;
+  margin: 0 auto;
+  object-fit: contain;
+}
+
 .footer-toolbar {
   padding: 12px 20px;
 }
