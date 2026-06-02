@@ -192,3 +192,30 @@
   font-size: 18px;
   margin-right: 8px;
 }
+
+.tutor-rating {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.rating-title {
+  margin-bottom: 4px;
+  font-size: 0.9rem;
+}
+
+.rating-stars {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tutor-rating ion-icon {
+  font-size: 18px;
+}
+
+.rating-value {
+  font-weight: 600;
+}
+

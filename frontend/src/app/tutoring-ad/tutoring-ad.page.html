@@ -93,7 +93,13 @@
               <ion-item lines="none" color="light">
                 <ion-label>
                   <ion-text color="primary">
-                    <h1><b>{{ ad.tutor?.name }}</b></h1>
+                    <h1>
+                      <a
+                        class="tutor-link"
+                        [routerLink]="['/user-profile', ad.tutor?.id]">
+                        <b>{{ ad.tutor?.name }}</b>
+                      </a>
+                    </h1>
                     <h2>Tutor en {{ ad.subject }}</h2>
                   </ion-text>
                 </ion-label>
@@ -135,11 +141,28 @@
 
               </ion-popover>
 
-              <!-- PRECIO -->
-              <h2 class="price">
-                {{ ad.price | currency:'CLP':'symbol':'1.0-0' }}
-                <span>/ hora</span>
-              </h2>
+              <!-- PRECIO + TELÉFONO -->
+              <div class="price-row">
+
+                <h2 class="price">
+                  {{ ad.price | currency:'CLP':'symbol':'1.0-0' }}
+                  <span>/ hora</span>
+                </h2>
+
+                <div class="phone-container">
+
+                  <ion-icon
+                    name="call"
+                    class="phone-icon">
+                  </ion-icon>
+
+                  <span class="phone-number">
+                    +56 9 6767 6767 <!--BACKEND CHANGES REQUIRED-->
+                  </span>
+
+                </div>
+
+              </div>
 
               <!-- BOTÓN -->
               <ion-button expand="block" color="tertiary" (click)="openBooking()">
@@ -152,7 +175,7 @@
           </ion-card>
 
           <!-- RATING -->
-          <ion-card mode="ios" color="light">
+          <ion-card mode="ios" color="light" class="rating-card">
             <ion-card-content>
 
               <ion-row class="ion-align-items-center">
@@ -228,7 +251,7 @@
 
               <ion-textarea
                 [(ngModel)]="reviewText"
-                maxlength="150"
+                maxlength="200"
                 counter="true"
                 placeholder="Escribe tu review..."
                 class="review-textarea">

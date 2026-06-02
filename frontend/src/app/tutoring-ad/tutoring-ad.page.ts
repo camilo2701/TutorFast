@@ -20,7 +20,8 @@ import {
   starOutline,
   ellipsisVertical,
   trashOutline,
-  createOutline
+  createOutline,
+  call
 } from 'ionicons/icons';
 
 import { ActivatedRoute } from '@angular/router';
@@ -77,7 +78,8 @@ export class TutoringAdPage implements OnInit {
       'star-outline': starOutline,
       'ellipsis-vertical': ellipsisVertical,
       'trash-outline': trashOutline,
-      'create-outline': createOutline
+      'create-outline': createOutline,
+      'call': call
     });
   }
 

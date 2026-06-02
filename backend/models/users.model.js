@@ -79,6 +79,17 @@ async function getUserByEmail(correo) {
     .maybeSingle();
 }
 
+async function activateSubscription(idUsuario) {
+  return await supabase
+    .from('usuario')
+    .update({
+      suscripcion: true
+    })
+    .eq('id_usuario', idUsuario)
+    .select()
+    .single();
+}
+
 module.exports = {
   getAllUsers,
   getUserById,
@@ -86,5 +97,6 @@ module.exports = {
   getTutorAds,
   getTutorReviews,
   getUserByEmail,
+  activateSubscription,
   createUser
 };

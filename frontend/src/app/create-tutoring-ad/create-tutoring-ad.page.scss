@@ -252,3 +252,44 @@ ion-label{
   margin-right: 8px;
 }
 
+.subscription-button{
+  color: --ion-color-secondary !important;
+}
+
+.light-payment-modal {
+  --background: white;
+  --color: black;
+}
+
+.light-payment-modal ion-content {
+  --background: white !important;
+}
+
+.light-payment-modal ion-list {
+  --background: white !important;
+}
+
+.light-payment-modal ion-toolbar {
+  --background: white !important;
+  --color: black !important;
+}
+.light-payment-modal ion-list {
+  background: white !important;
+  --background: white !important;
+}
+.light-payment-modal ion-item {
+  --background: var(--ion-color-light-shade:)!important;
+  --color: black !important;
+}
+
+.light-payment-modal ion-label,
+.light-payment-modal ion-title,
+.light-payment-modal h2,
+.light-payment-modal p {
+  color: black !important;
+}
+
+.light-payment-modal ion-icon {
+  color: black !important;
+}
+

@@ -299,6 +299,19 @@ ion-segment-button {
   z-index: 10;
 }
 
+.tutor-link {
+  color: var(--ion-color-primary);
+  text-decoration: none;
+  cursor: pointer;
+
+  transition: opacity 0.2s ease;
+}
+
+.tutor-link:hover {
+  opacity: 0.8;
+  text-decoration: none;
+}
+
 /* DELETE BUTTON */
 
 .delete-tutoring-btn {
@@ -328,7 +341,7 @@ ion-segment-button {
   margin: 0;
   height: 32px;
 
-  font-size: 1rem;
+  font-size: 12rem;
   font-weight: bold;
 }
 
@@ -369,6 +382,30 @@ ion-segment-button {
   max-width: 420px;
   margin: auto;
   border-radius: 16px;
+}
+
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.phone-container {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.phone-icon {
+  font-size: 22px;
+  color: var(--ion-color-primary);
+  margin-right: 0;
+}
+
+.phone-number {
+  color: var(--ion-color-tertiary);
+  font-size: 15px;
+  font-weight: 600;
 }
 
 /* STARS */

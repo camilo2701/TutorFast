@@ -90,6 +90,30 @@
           }}
         </p>
 
+        <div
+          *ngIf="user.role === 'tutor'"
+          class="tutor-rating">
+
+          <span class="rating-title">
+            Calificación promedio
+          </span>
+
+          <div class="rating-stars">
+
+            <ion-icon
+              *ngFor="let star of getAverageStarsArray()"
+              [name]="star"
+              color="tertiary">
+            </ion-icon>
+
+            <span class="rating-value">
+              {{ getAverageRating() }}
+            </span>
+
+          </div>
+
+        </div>
+
       </div>
     </div>
 
@@ -137,7 +161,9 @@
           *ngFor="let tutoring of tutorSessions"
           class="tutoring-card"
           role="button"
-          tabindex="0">
+          tabindex="0"
+          (click)="goToTutoringDetails(tutoring.id)">
+          
 
           <strong>{{ tutoring.title }}</strong>
 

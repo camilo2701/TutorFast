@@ -8,8 +8,9 @@ import { addIcons } from 'ionicons';
 import { homeOutline, personCircleOutline } from 'ionicons/icons';
 import { AlertController } from '@ionic/angular';
 import { logInOutline, logOutOutline, personOutline,
-  gridOutline, cardOutline, businessOutline } from 'ionicons/icons';
+  gridOutline, cardOutline, businessOutline, cashOutline, logoUsd } from 'ionicons/icons';
 import { TutoringAdService } from '../services/tutoring-ad.service';
+import { UserProfileService } from '../services/user-profile.service';
 
 @Component({
   selector: 'app-create-tutoring-ad',
@@ -22,6 +23,7 @@ import { TutoringAdService } from '../services/tutoring-ad.service';
     FormsModule,
     RouterModule,
   ]
+  
 })
 export class CreateTutoringAdPage implements OnInit {
 
@@ -32,12 +34,14 @@ export class CreateTutoringAdPage implements OnInit {
     description: '',
     boost: false
   };
-
+  isSubscriptionModalOpen = false;
+  selectedPaymentMethod: string | null = null;
   isLoggedIn: boolean = false;
   isPopoverOpen = false;
   popoverEvent: Event | null = null;
 
-  constructor(private alertController: AlertController, private router: Router, private tutoringAdService: TutoringAdService) {
+
+  constructor(private alertController: AlertController, private router: Router, private tutoringAdService: TutoringAdService, private userProfileService: UserProfileService) {
     addIcons({
       'home-outline': homeOutline,
       'person-circle-outline': personCircleOutline,
@@ -46,7 +50,10 @@ export class CreateTutoringAdPage implements OnInit {
       'log-in-outline': logInOutline,
       'log-out-outline': logOutOutline,
       'person-outline': personOutline,
-      'grid-outline': gridOutline
+      'grid-outline': gridOutline,
+      'cash-outline': cashOutline,
+      'logo-usd': logoUsd,
+
     });
   }
 
@@ -60,7 +67,7 @@ export class CreateTutoringAdPage implements OnInit {
 
     this.isLoggedIn = !!token && !!user;
   }
-
+  
   getLoggedUser() {
     const user = localStorage.getItem('user');
     return user ? JSON.parse(user) : null;
@@ -210,11 +217,71 @@ export class CreateTutoringAdPage implements OnInit {
       description: '',
       boost: false
     };
+    console.log('Navegar a dashboard');
+    this.router.navigateByUrl('/dashboard')
   }
 
   canBoost(): boolean {
     const user = this.getLoggedUser();
     return user?.suscripcion === true;
   }
+  openSubscriptionModal() {
+    this.isSubscriptionModalOpen = true;
+  }
 
+  closeSubscriptionModal() {
+    this.isSubscriptionModalOpen = false;
+  }
+
+  payWithCard() {
+    this.selectedPaymentMethod = 'card';
+    console.log('Pago con tarjeta');
+  }
+
+  payWithPaypal() {
+    this.selectedPaymentMethod = 'paypal';
+    console.log('Pago con PayPal');
+  }
+
+  payWithMercadoPago() {
+    this.selectedPaymentMethod = 'mercadopago';
+    console.log('Pago con Mercado Pago');
+  }
+
+  async confirmSubscription() {
+
+  this.userProfileService
+    .activateSubscription()
+    .subscribe({
+
+      next: async () => {
+
+        const user =
+          JSON.parse(localStorage.getItem('user') || '{}');
+
+        user.suscripcion = true;
+
+        localStorage.setItem(
+          'user',
+          JSON.stringify(user)
+        );
+
+        await this.showAlert(
+          'Pago realizado exitosamente. Tu suscripción Premium ha sido activada.'
+        );
+
+        this.closeSubscriptionModal();
+      },
+
+      error: async (err) => {
+
+        console.error(err);
+
+        await this.showAlert(
+          'Error al activar la suscripción.'
+        );
+      }
+
+    });
+}
 }

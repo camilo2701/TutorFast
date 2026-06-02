@@ -7,7 +7,9 @@ import { addIcons } from 'ionicons';
 import { homeOutline, personCircleOutline } from 'ionicons/icons';
 
 import { logInOutline, logOutOutline, personOutline,
-  gridOutline, cardOutline, businessOutline } from 'ionicons/icons';
+  gridOutline, cardOutline, businessOutline, star,
+  starOutline,
+  starHalf} from 'ionicons/icons';
 
 import { UserProfileService } from '../services/user-profile.service';
 
@@ -45,7 +47,10 @@ export class UserProfilePage implements OnInit {
       'log-in-outline': logInOutline,
       'log-out-outline': logOutOutline,
       'person-outline': personOutline,
-      'grid-outline': gridOutline
+      'grid-outline': gridOutline,
+      'star': star,
+      'star-outline': starOutline,
+      'star-half': starHalf
     });
   }
 
@@ -161,4 +166,46 @@ export class UserProfilePage implements OnInit {
       ? this.user.image
       : 'assets/icon/userpfp.jpg';
   }
+
+  goToTutoringDetails(id: number) {
+    this.router.navigate(['/tutoring-ad', id]);
+  }
+
+  getAverageRating(): number {
+    if (!this.tutorReviews.length) {
+      return 0;
+    }
+
+    const total = this.tutorReviews.reduce(
+      (sum, review) => sum + Number(review.rating),
+      0
+    );
+
+    return Number((total / this.tutorReviews.length).toFixed(1));
+  }
+
+  getAverageStarsArray(): string[] {
+    const average = this.getAverageRating();
+
+    const rounded = Math.round(average * 2) / 2;
+
+    const stars: string[] = [];
+
+    for (let i = 1; i <= 5; i++) {
+
+      if (rounded >= i) {
+        stars.push('star');
+      }
+      else if (rounded >= i - 0.5) {
+        stars.push('star-half');
+      }
+      else {
+        stars.push('star-outline');
+      }
+
+    }
+
+    return stars;
+  }
+
 }

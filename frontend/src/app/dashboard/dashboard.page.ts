@@ -21,7 +21,8 @@ import {
   ellipsisVerticalOutline,
   imageOutline,
   star,
-  starOutline
+  starOutline,
+  trashBinOutline
 } from 'ionicons/icons';
 
 interface User {
@@ -70,7 +71,8 @@ export class DashboardPage implements OnInit {
       'ellipsis-vertical-outline': ellipsisVerticalOutline,
       'image-outline': imageOutline,
       'star': star,
-      'star-outline': starOutline
+      'star-outline': starOutline,
+      'trash-bin-outline': trashBinOutline
     });
   }
 
@@ -335,6 +337,36 @@ export class DashboardPage implements OnInit {
       },
       error: (error) => alert(error.error?.error || 'Error al actualizar perfil')
     });
+  }
+
+  async confirmDeleteAccount() { // BACKEND CHANGES REQUIRED
+
+    // if statement que pregunte si desea eliminar su cuenta si es tutor o usuario y NO tiene Tutorias asociadas a su nombre
+      const alert = await this.alertCtrl.create({
+        header: 'Confirmar',
+        message: '¿Desea eliminar su cuenta y toda la información asociada a esta?',
+        cssClass: 'custom-alert',
+        buttons: [
+          {
+            text: 'No',
+            role: 'cancel'
+          },
+          {
+            text: 'Sí',
+            handler: () => {
+              console.log('Eliminar cuenta');
+              // Aquí irá la llamada al backend cuando exista
+            }
+          }
+        ]
+      });
+
+    /*
+      
+    
+    */
+
+    await alert.present();
   }
 
   /* =========================

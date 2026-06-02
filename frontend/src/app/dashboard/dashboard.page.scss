@@ -180,6 +180,25 @@
   padding: 20px;
 }
 
+.profile-image-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-top: 8px;
+  margin-bottom: 12px;
+}
+
+.delete-account-btn {
+  --padding-start: 0;
+  --padding-end: 0;
+
+  margin-right: 0;
+}
+
+.delete-account-btn ion-icon {
+  font-size: 28px;
+}
 
 /* =========================
    🔹 REVIEWS (LIMPIAS)

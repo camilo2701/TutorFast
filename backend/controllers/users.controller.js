@@ -242,9 +242,29 @@ async function loginUser(req, res) {
   });
 }
 
+async function activateSubscription(req, res) {
+
+  const idUsuario = req.user.id_usuario;
+
+  const { data, error } =
+    await UserModel.activateSubscription(idUsuario);
+
+  if (error) {
+    return res.status(500).json({
+      error: error.message
+    });
+  }
+
+  res.json({
+    message: 'Suscripción activada',
+    user: data
+  });
+}
+
 module.exports = {
   getAllUsers,
   getUserProfile,
   createUser,
+  activateSubscription,
   loginUser
 };

@@ -126,17 +126,38 @@
   <!-- CONTENT -->
   <div class="content">
 
-    <!-- PERFIL -->
+    <!-- =========================
+        👤 GESTIONAR PERFIL
+    ========================= -->
     <ion-card *ngIf="view==='profile'" color="light">
       <ion-card-content>
-
+          <!-- FOTO DE PERFIL -->
           <div class="profile-image-section">
-            <ion-label position="stacked" color="primary">Foto de perfil</ion-label>
-            <ion-avatar>
-              <img [src]="user.image || 'assets/icon/userpfp.jpg'"/>
-            </ion-avatar>
+
+            <ion-label position="stacked" color="primary">
+              Foto de perfil
+            </ion-label>
+
+            <div class="profile-image-row">
+
+              <ion-avatar>
+                <img [src]="user.image || 'assets/icon/userpfp.jpg'"/>
+              </ion-avatar>
+
+              <ion-button
+                fill="clear"
+                color="danger"
+                class="delete-account-btn"
+                (click)="confirmDeleteAccount()">
+
+                <ion-icon name="trash-bin-outline"></ion-icon>
+
+              </ion-button>
+
+            </div>
 
             <input type="file" (change)="onImageUpload($event)">
+
           </div>
 
           <!-- NOMBRE -->
@@ -175,7 +196,9 @@
         </ion-card-content>
     </ion-card>
 
-    <!-- REVIEWS -->
+    <!-- =========================
+        🏫 GESTIONAR REVIEWS
+    ========================= -->
     <ion-card *ngIf="view==='reviews'" color="light">
       <ion-card-content>
 
@@ -667,7 +690,6 @@
   </div>
 
 </div>
-
 </ion-content>
 
 <ion-footer>
