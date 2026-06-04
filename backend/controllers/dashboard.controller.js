@@ -420,7 +420,9 @@ async function approveVerificationRequest(req, res) {
   const idSolicitud = Number(req.params.id);
 
   const { data: request, error } =
-    await DashboardModel.getVerificationRequestById(idSolicitud);
+    await DashboardModel.getVerificationRequestById(
+      idSolicitud
+    );
 
   if (error || !request) {
     return res.status(404).json({
@@ -428,15 +430,25 @@ async function approveVerificationRequest(req, res) {
     });
   }
 
-  const {
-    error: verifyError
-  } = await DashboardModel.verifyTutor(
-    request.id_usuario
-  );
+  const { error: verifyError } =
+    await DashboardModel.verifyTutor(
+      request.id_usuario
+    );
 
   if (verifyError) {
     return res.status(500).json({
       error: verifyError.message
+    });
+  }
+
+  const { error: deleteError } =
+    await DashboardModel.deleteVerificationRequest(
+      idSolicitud
+    );
+
+  if (deleteError) {
+    return res.status(500).json({
+      error: deleteError.message
     });
   }
 
