@@ -782,7 +782,7 @@ export class DashboardPage implements OnInit {
      🔹 VERIFICACION DE TUTORES
   ========================= */
 
-  tutorVerified = false; // backend
+  tutorVerified: boolean = false;
 
   verificationPdf: File | null = null;
 
@@ -1076,6 +1076,7 @@ export class DashboardPage implements OnInit {
         this.role = me.role;
         this.loggedUserId = me.id;
         this.isLoggedIn = true;
+        this.tutorVerified = me.tutorVerified;
 
         this.currentUser = {
           name: me.name,

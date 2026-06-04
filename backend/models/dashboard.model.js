@@ -3,7 +3,7 @@ const supabase = require('../config/db');
 async function getUserById(idUsuario) {
   return await supabase
     .from('usuario')
-    .select('id_usuario, nombre_real, nombre_de_usuario, correo_electronico, rol, rut, suscripcion, pfp')
+    .select('id_usuario, nombre_real, nombre_de_usuario, correo_electronico, rol, rut, suscripcion, "verificacion-tutor", pfp')
     .eq('id_usuario', idUsuario)
     .maybeSingle();
 }

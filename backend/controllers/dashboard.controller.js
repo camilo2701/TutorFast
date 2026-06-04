@@ -11,6 +11,7 @@ function formatUser(user) {
     email: user.correo_electronico,
     role: user.rol,
     subscription: user.suscripcion,
+    tutorVerified: user['verificacion-tutor'],
     image: user.pfp || 'assets/icon/userpfp.jpg'
   };
 }
