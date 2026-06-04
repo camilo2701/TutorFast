@@ -531,33 +531,76 @@
 
         <div class="verification-status">
 
+          <!-- AUTORIZADO -->
           <h2 *ngIf="tutorVerified">
+
             Estado de verificación para impartir tutorías:
-            <span class="success-text">Activado</span>
+
+            <span class="success-text">
+              Activado
+            </span>
 
             <ion-icon
               color="success"
               name="checkmark-circle-outline">
             </ion-icon>
+
           </h2>
 
-          <h2 *ngIf="!tutorVerified">
+          <!-- PENDIENTE -->
+          <h2 *ngIf="!tutorVerified && hasVerificationRequest">
+
             Estado de verificación para impartir tutorías:
-            <span class="danger-text">No Activado</span>
+
+            <span class="warning-text">
+              Pendiente
+            </span>
+
+            <ion-icon
+              color="warning"
+              name="time-outline">
+            </ion-icon>
+
+          </h2>
+
+          <!-- NO AUTORIZADO -->
+          <h2 *ngIf="!tutorVerified && !hasVerificationRequest">
+
+            Estado de verificación para impartir tutorías:
+
+            <span class="danger-text">
+              No Activado
+            </span>
 
             <ion-icon
               color="danger"
               name="close-circle-outline">
             </ion-icon>
+
           </h2>
 
         </div>
 
-        <p *ngIf="tutorVerified" class="verification-message">
+        <!-- AUTORIZADO -->
+        <p
+          *ngIf="tutorVerified"
+          class="verification-message">
+
           Actualmente estás habilitado para crear y publicar tutorías.
+
         </p>
 
-        <div *ngIf="!tutorVerified">
+        <!-- PENDIENTE -->
+        <p
+          *ngIf="!tutorVerified && hasVerificationRequest"
+          class="verification-message warning-text">
+
+          Tu solicitud de verificación ha sido recibida y se encuentra
+          pendiente de revisión por parte del administrador.
+
+        </p>
+
+        <div *ngIf="!tutorVerified && !hasVerificationRequest">
 
           <p class="verification-message">
             Debes adjuntar un certificado de alumno regular emitido por tu universidad

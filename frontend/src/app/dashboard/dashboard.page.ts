@@ -783,7 +783,10 @@ export class DashboardPage implements OnInit {
   ========================= */
 
   tutorVerified: boolean = false;
-
+  // Placeholder backend:
+  // true = existe solicitud pendiente
+  // false = no existe solicitud
+  hasVerificationRequest: boolean = false;
   verificationPdf: File | null = null;
 
   /* ADMIN */
@@ -845,7 +848,9 @@ export class DashboardPage implements OnInit {
 
           await alert.present();
 
-          this.verificationPdf = null;
+          this.verificationPdf = null;          
+          // Actualiza inmediatamente la vista
+          this.hasVerificationRequest = true;
         },
 
         error: async (err) => {
