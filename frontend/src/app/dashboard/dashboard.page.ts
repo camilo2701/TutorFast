@@ -1082,6 +1082,19 @@ export class DashboardPage implements OnInit {
         this.loggedUserId = me.id;
         this.isLoggedIn = true;
         this.tutorVerified = me.tutorVerified;
+        console.log('Voy a consultar solicitud');
+
+        this.dashboardService
+          .getMyVerificationRequest()
+          .subscribe({
+            next: (data) => {
+              console.log('Solicitud pendiente:', data);
+              this.hasVerificationRequest = data.hasRequest;
+            },
+            error: (err) => {
+              console.error('ERROR CONSULTANDO SOLICITUD', err);
+            }
+          });
 
         this.currentUser = {
           name: me.name,
@@ -1166,5 +1179,40 @@ export class DashboardPage implements OnInit {
     });
   }
 
+  async handleCreateAd() {
+
+    if (!this.tutorVerified) {
+
+      const alert = await this.alertCtrl.create({
+        header: 'Acción no permitida',
+        message: 'Debes estar verificado como tutor para crear anuncios de tutoría.',
+        cssClass: 'custom-alert',
+        buttons: ['OK']
+      });
+
+      await alert.present();
+      return;
+    }
+
+    this.router.navigate(['/create-tutoring-ad']);
+  }
+
+  async downloadPdf(url: string) {
+
+    const response = await fetch(url);
+
+    const blob = await response.blob();
+
+    const blobUrl = window.URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+
+    link.href = blobUrl;
+    link.download = 'documento-verificacion.pdf';
+
+    link.click();
+
+    window.URL.revokeObjectURL(blobUrl);
+  }
   
 }

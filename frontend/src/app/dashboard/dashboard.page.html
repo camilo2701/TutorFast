@@ -407,7 +407,7 @@
               color="tertiary"
               fill="solid"
               class="create-ad-btn"
-              routerLink="/create-tutoring-ad">
+              (click)="handleCreateAd()">
 
               <ion-label color="light">Crear un Anuncio de Tutoría</ion-label>
 
@@ -692,8 +692,7 @@
               <ion-button
                 fill="clear"
                 color="primary"
-                [href]="request.document"
-                target="_blank">
+                (click)="downloadPdf(request.document)">
 
                 <ion-icon
                   slot="start"

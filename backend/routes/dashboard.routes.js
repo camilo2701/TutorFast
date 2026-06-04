@@ -28,4 +28,6 @@ router.patch('/verification-requests/:id/approve', verifyToken, DashboardControl
 
 router.delete('/verification-requests/:id/reject', verifyToken, DashboardController.rejectVerificationRequest);
 
+router.get('/verification-request-status', verifyToken, DashboardController.hasVerificationRequest);
+
 module.exports = router;

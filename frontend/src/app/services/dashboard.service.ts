@@ -95,4 +95,11 @@ export class DashboardService {
       this.headers()
     );
   }
+
+  getMyVerificationRequest() {
+    return this.http.get<any>(
+      `${this.apiUrl}/verification-request-status`,
+      this.headers()
+    );
+  }
 }

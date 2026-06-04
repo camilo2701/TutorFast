@@ -532,6 +532,25 @@ async function rejectVerificationRequest(req, res) {
   }
 }
 
+async function hasVerificationRequest(req, res) {
+
+  const { data, error } = await supabase
+    .from('solicitud_verificacion')
+    .select('id_solicitud')
+    .eq('id_usuario', req.user.id_usuario)
+    .maybeSingle();
+
+  if (error) {
+    return res.status(500).json({
+      error: error.message
+    });
+  }
+
+  res.json({
+    hasRequest: !!data
+  });
+}
+
 module.exports = {
   getMe,
   updateMe,
@@ -546,5 +565,6 @@ module.exports = {
   createVerificationRequest,
   getVerificationRequests,
   approveVerificationRequest,
-  rejectVerificationRequest
+  rejectVerificationRequest,
+  hasVerificationRequest
 };
