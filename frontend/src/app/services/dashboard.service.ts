@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class DashboardService {
 
-  private apiUrl = 'http://localhost:3000/api/dashboard';
+  private apiUrl = 'http://tutorfast-api.onrender.com/api/dashboard';
 
   constructor(private http: HttpClient) {}
 

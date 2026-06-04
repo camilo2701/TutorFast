@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class AuthService {
 
-  private apiUrl = 'http://localhost:3000/api/users';
+  private apiUrl = 'http://tutorfast-api.onrender.com/api/users';
 
   constructor(private http: HttpClient) {}
 
