@@ -118,6 +118,24 @@
           name="lastname">
         </ion-input>
 
+        <ion-label>Celular</ion-label>
+
+        <ion-input
+          type="text"
+          placeholder="+56 9 XXXX XXXX"
+          [(ngModel)]="user.phonenumber"
+          name="phone"
+          #phoneCtrl="ngModel"
+          (ionInput)="formatPhoneNumber($event)"
+          pattern="^\+56 9 \d{4} \d{4}$"
+          required>
+        </ion-input>
+
+        <div class="error-msg"
+            *ngIf="phoneCtrl.invalid && phoneCtrl.touched">
+          El formato debe ser +56 9 XXXX XXXX
+        </div>
+
         <ion-label>Correo electrónico</ion-label>
         <ion-input
           type="email"

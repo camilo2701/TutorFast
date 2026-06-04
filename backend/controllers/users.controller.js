@@ -103,13 +103,14 @@ async function createUser(req, res) {
     const {
       nombre_real,
       nombre_de_usuario,
+      telefono,
       correo_electronico,
       contrasena,
       rol,
       rut
     } = req.body;
 
-    if (!nombre_real || !nombre_de_usuario || !correo_electronico || !contrasena || rol === undefined) {
+    if (!nombre_real || !nombre_de_usuario || !telefono || !correo_electronico || !contrasena || rol === undefined) {
       return res.status(400).json({ error: 'Faltan datos obligatorios' });
     }
 
@@ -151,6 +152,7 @@ async function createUser(req, res) {
     const newUser = {
       nombre_real,
       nombre_de_usuario,
+      telefono,
       correo_electronico,
       contrasena: hashedPassword,
       rol,
@@ -183,6 +185,7 @@ async function createUser(req, res) {
         id_usuario: data.id_usuario,
         nombre_real: data.nombre_real,
         nombre_de_usuario: data.nombre_de_usuario,
+        telefono: data.telefono,
         correo_electronico: data.correo_electronico,
         rol: data.rol,
         suscripcion: data.suscripcion,
@@ -235,6 +238,7 @@ async function loginUser(req, res) {
       id_usuario: usuario.id_usuario,
       nombre_real: usuario.nombre_real,
       nombre_de_usuario: usuario.nombre_de_usuario,
+      telefono: usuario.telefono,
       correo_electronico: usuario.correo_electronico,
       suscripcion: usuario.suscripcion,
       rol: usuario.rol

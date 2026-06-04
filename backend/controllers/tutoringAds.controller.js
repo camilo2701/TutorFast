@@ -101,6 +101,7 @@ async function getTutoringAdById(req, res) {
     tutor: {
       id: anuncio.usuario.id_usuario,
       name: anuncio.usuario.nombre_real,
+      telefono: anuncio.usuario.telefono,
       image: anuncio.usuario.pfp
     },
     rating: averageRating,

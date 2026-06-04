@@ -36,6 +36,7 @@ export class RegisterPage implements OnInit{
     lastname: string;
     email: string;
     password: string;
+    phonenumber: string;
     role: 'student' | 'tutor';
     acceptTerms: boolean;
   } = {
@@ -44,6 +45,7 @@ export class RegisterPage implements OnInit{
     lastname: '',
     email: '',
     password: '',
+    phonenumber: '',
     role: 'student',
     acceptTerms: false
   };
@@ -208,10 +210,11 @@ export class RegisterPage implements OnInit{
     formData.append('nombre_real', `${this.user.name} ${this.user.lastname}`);
     formData.append('nombre_de_usuario', this.user.email.split('@')[0]);
     formData.append('correo_electronico', this.user.email);
+    formData.append('telefono', this.user.phonenumber);
     formData.append('contrasena', this.user.password);
     formData.append('rol', this.user.role === 'student' ? '0' : '1');
     formData.append('rut', this.user.rut.replace(/\./g, ''));
-
+    
     if (this.selectedFile) {
       formData.append('pfp', this.selectedFile);
     }
@@ -228,5 +231,38 @@ export class RegisterPage implements OnInit{
         alert(error.error?.error || 'Error al crear la cuenta');
       }
     });
+  }
+
+  formatPhoneNumber(event: any) {
+
+    let value = event.target.value || '';
+
+    // dejar solo números
+    let digits = value.replace(/\D/g, '');
+
+    // quitar 56 si viene repetido
+    if (digits.startsWith('56')) {
+      digits = digits.substring(2);
+    }
+
+    // quitar 9 inicial si viene repetido
+    if (digits.startsWith('9')) {
+      digits = digits.substring(1);
+    }
+
+    // máximo 8 dígitos
+    digits = digits.substring(0, 8);
+
+    let formatted = '+56 9';
+
+    if (digits.length > 0) {
+      formatted += ' ' + digits.substring(0, 4);
+    }
+
+    if (digits.length > 4) {
+      formatted += ' ' + digits.substring(4, 8);
+    }
+
+    this.user.phonenumber = formatted;
   }
 }

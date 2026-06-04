@@ -23,6 +23,7 @@ async function getTutoringAdById(idAnuncio) {
       usuario (
         id_usuario,
         nombre_real,
+        telefono,
         pfp
       )
     `)
@@ -68,6 +69,7 @@ async function getAllTutoringAds() {
       usuario (
         id_usuario,
         nombre_real,
+        telefono,
         pfp
       ),
       review (
@@ -88,6 +90,7 @@ async function getAllConfirmedTutorias() {
         usuario (
           id_usuario,
           nombre_real,
+          telefono,
           pfp
         )
       )
