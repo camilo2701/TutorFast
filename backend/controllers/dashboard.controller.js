@@ -551,6 +551,24 @@ async function hasVerificationRequest(req, res) {
   });
 }
 
+async function deleteMyAccount(req, res) {
+
+  const idUsuario = req.user.id_usuario;
+
+  const { error } =
+    await DashboardModel.deleteUser(idUsuario);
+
+  if (error) {
+    return res.status(500).json({
+      error: 'No se pudo eliminar la cuenta. Puede tener tutorías, anuncios o reviews asociadas.'
+    });
+  }
+
+  res.json({
+    message: 'Cuenta eliminada correctamente'
+  });
+}
+
 module.exports = {
   getMe,
   updateMe,
@@ -566,5 +584,6 @@ module.exports = {
   getVerificationRequests,
   approveVerificationRequest,
   rejectVerificationRequest,
-  hasVerificationRequest
+  hasVerificationRequest,
+  deleteMyAccount
 };

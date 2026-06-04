@@ -102,4 +102,11 @@ export class DashboardService {
       this.headers()
     );
   }
+
+  deleteMyAccount() {
+    return this.http.delete(
+      `${this.apiUrl}/me`,
+      this.headers()
+    );
+  }
 }

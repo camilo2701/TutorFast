@@ -10,10 +10,6 @@ router.get('/', UsersController.getAllUsers);
 router.get('/:id', UsersController.getUserProfile);
 router.post('/login', UsersController.loginUser);
 router.post('/', upload.single('pfp'), UsersController.createUser);
-router.patch(
-  '/subscription',
-  verifyToken,
-  UsersController.activateSubscription
-);
+router.patch('/subscription', verifyToken, UsersController.activateSubscription);
 
 module.exports = router;

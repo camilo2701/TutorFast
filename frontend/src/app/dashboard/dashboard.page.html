@@ -144,7 +144,6 @@
       <ion-card-content>
           <!-- FOTO DE PERFIL -->
           <div class="profile-image-section">
-
             <ion-label position="stacked" color="primary">
               Foto de perfil
             </ion-label>
@@ -167,11 +166,7 @@
 
             </div>
 
-            <input
-              type="file"
-              accept=".pdf"
-              (change)="onFileSelected($event)">
-
+            <input type="file" (change)="onImageUpload($event)">
           </div>
 
           <!-- NOMBRE -->

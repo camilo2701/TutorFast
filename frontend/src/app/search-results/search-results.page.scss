@@ -76,14 +76,20 @@
   box-shadow: 0 8px 20px rgba(0,0,0,0.12);
 }
 
-/* ✨ AURA PREMIUM */
+/* animación suave tipo "respiración" */
+/* animación SOLO premium */
 .premium-card {
-  animation: glow 1.5s infinite alternate;
-  box-shadow: 
-    0 0 10px rgba(255, 140, 0, 0.6),
-    0 0 20px rgba(255, 140, 0, 0.4),
-    0 4px 12px rgba(0,0,0,0.1);
+  animation: tutorGlow 0.5s infinite alternate;
   
+}
+
+@keyframes tutorGlow {
+  from {
+    box-shadow: 0 0 10px rgba(46, 44, 44, 0.808);
+  }
+  to {
+    box-shadow: 0 0 20px rgb(255, 174, 0);
+  }
 }
 .no-results {
   display: flex;
@@ -95,14 +101,6 @@
 
   width: 100%;
   text-align: center;
-}
-@keyframes glow {
-  from {
-    box-shadow: 0 0 4px rgba(255, 140, 0, 0.568);
-  }
-  to {
-    box-shadow: 0 0 10px rgba(255, 140, 0, 0.925);
-  }
 }
 .nombre-tutor {
   font-size: 1.2rem;

@@ -351,32 +351,47 @@ export class DashboardPage implements OnInit {
     });
   }
 
-  async confirmDeleteAccount() { // BACKEND CHANGES REQUIRED
+  async confirmDeleteAccount() {
 
-    // if statement que pregunte si desea eliminar su cuenta si es tutor o usuario y NO tiene Tutorias asociadas a su nombre
-      const alert = await this.alertCtrl.create({
-        header: 'Confirmar',
-        message: '¿Desea eliminar su cuenta y toda la información asociada a esta?',
-        cssClass: 'custom-alert',
-        buttons: [
-          {
-            text: 'No',
-            role: 'cancel'
-          },
-          {
-            text: 'Sí',
-            handler: () => {
-              console.log('Eliminar cuenta');
-              // Aquí irá la llamada al backend cuando exista
-            }
+    const alert = await this.alertCtrl.create({
+      header: 'Confirmar',
+      message: '¿Desea eliminar su cuenta y toda la información asociada a esta?',
+      cssClass: 'custom-alert',
+      buttons: [
+        {
+          text: 'No',
+          role: 'cancel'
+        },
+        {
+          text: 'Sí',
+          handler: () => {
+
+            this.dashboardService
+              .deleteMyAccount()
+              .subscribe({
+
+                next: () => {
+
+                  localStorage.removeItem('token');
+                  localStorage.removeItem('user');
+
+                  this.router.navigate(['/login']);
+                },
+
+                error: (err) => {
+
+                  window.alert(
+                    err.error?.error || 'No se pudo eliminar la cuenta'
+                  );
+
+                }
+
+              });
+
           }
-        ]
-      });
-
-    /*
-      
-    
-    */
+        }
+      ]
+    });
 
     await alert.present();
   }

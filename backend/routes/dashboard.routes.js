@@ -29,5 +29,6 @@ router.patch('/verification-requests/:id/approve', verifyToken, DashboardControl
 router.delete('/verification-requests/:id/reject', verifyToken, DashboardController.rejectVerificationRequest);
 
 router.get('/verification-request-status', verifyToken, DashboardController.hasVerificationRequest);
+router.delete('/me', verifyToken, DashboardController.deleteMyAccount);
 
 module.exports = router;
