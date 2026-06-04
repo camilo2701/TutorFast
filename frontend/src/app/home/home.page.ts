@@ -58,7 +58,10 @@ export class HomePage implements OnInit {
   loadHomeData() {
     this.tutoringAdService.getTutorias().subscribe({
       next: (data) => {
-        this.tutorias = data;
+        this.tutorias = [...data].sort((a: any, b: any) => {
+          return Number(b.premium) - Number(a.premium);
+        });
+
       },
       error: (error) => {
         console.error('Error cargando tutorías:', error);

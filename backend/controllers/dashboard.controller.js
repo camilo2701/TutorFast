@@ -303,6 +303,222 @@ async function deleteUserImage(req, res) {
   });
 }
 
+async function uploadVerificationDocument(file) {
+
+  if (!file) {
+    throw new Error('Debe adjuntar un PDF');
+  }
+
+  if (file.mimetype !== 'application/pdf') {
+    throw new Error('Solo se permiten PDFs');
+  }
+
+  const filePath = `solicitudes/${Date.now()}-${file.originalname}`;
+
+  const { error: uploadError } =
+    await supabase.storage
+      .from('verifications')
+      .upload(filePath, file.buffer, {
+        contentType: 'application/pdf'
+      });
+
+  console.log('UPLOAD ERROR:', uploadError);
+
+  if (uploadError) {
+    throw new Error(uploadError.message);
+  }
+
+  const { data } =
+    supabase.storage
+      .from('verifications')
+      .getPublicUrl(filePath);
+
+  return data.publicUrl;
+}
+
+async function createVerificationRequest(req, res) {
+
+  console.log('Archivo recibido:', req.file);
+
+  try {
+
+    const pdfUrl =
+      await uploadVerificationDocument(req.file);
+
+    const { data, error } = await supabase
+      .from('solicitud_verificacion')
+      .insert({
+        id_usuario: req.user.id_usuario,
+        documento: pdfUrl
+      })
+      .select()
+      .single();
+
+    console.log('INSERT ERROR:', error);
+
+    if (error) {
+      return res.status(500).json({
+        error: error.message
+      });
+    }
+
+    res.json({
+      message: 'Solicitud enviada',
+      solicitud: data
+    });
+
+  } catch (err) {
+
+    console.error('ERROR:', err);
+
+    res.status(400).json({
+      error: err.message
+    });
+
+  }
+}
+
+async function getVerificationRequests(req, res) {
+
+  if (req.user.rol !== 2) {
+    return res.status(403).json({
+      error: 'Solo admin'
+    });
+  }
+
+  const { data, error } =
+    await DashboardModel.getVerificationRequests();
+
+  if (error) {
+    return res.status(500).json({
+      error: error.message
+    });
+  }
+
+  const requests = data.map(r => ({
+    id: r.id_solicitud,
+    name: r.usuario?.nombre_real,
+    rut: r.usuario?.rut,
+    phone: r.usuario?.telefono,
+    document: r.documento,
+    createdAt: r.fecha_creacion,
+    userId: r.id_usuario
+  }));
+
+  res.json(requests);
+}
+
+async function approveVerificationRequest(req, res) {
+
+  if (req.user.rol !== 2) {
+    return res.status(403).json({
+      error: 'Solo admin'
+    });
+  }
+
+  const idSolicitud = Number(req.params.id);
+
+  const { data: request, error } =
+    await DashboardModel.getVerificationRequestById(idSolicitud);
+
+  if (error || !request) {
+    return res.status(404).json({
+      error: 'Solicitud no encontrada'
+    });
+  }
+
+  const {
+    error: verifyError
+  } = await DashboardModel.verifyTutor(
+    request.id_usuario
+  );
+
+  if (verifyError) {
+    return res.status(500).json({
+      error: verifyError.message
+    });
+  }
+
+  res.json({
+    message: 'Tutor verificado correctamente'
+  });
+}
+
+async function rejectVerificationRequest(req, res) {
+
+  try {
+
+    if (req.user.rol !== 2) {
+      return res.status(403).json({
+        error: 'Solo admin'
+      });
+    }
+
+    const idSolicitud = Number(req.params.id);
+
+    const { data: request, error } =
+      await DashboardModel.getVerificationRequestById(idSolicitud);
+
+    if (error || !request) {
+      return res.status(404).json({
+        error: 'Solicitud no encontrada'
+      });
+    }
+
+    const url = request.documento;
+
+    const filePath = decodeURIComponent(
+      url.split('/storage/v1/object/public/verifications/')[1]
+    );
+
+    console.log('URL:', url);
+    console.log('FILEPATH:', filePath);
+
+    if (filePath) {
+
+      const {
+        data: deletedFiles,
+        error: deleteError
+      } = await supabase.storage
+        .from('verifications')
+        .remove([filePath]);
+
+      console.log('DELETE DATA:', deletedFiles);
+      console.log('DELETE ERROR:', deleteError);
+
+      if (deleteError) {
+        return res.status(500).json({
+          error: 'Error eliminando archivo del bucket',
+          details: deleteError.message
+        });
+      }
+    }
+
+    const { error: deleteRequestError } =
+      await DashboardModel.deleteVerificationRequest(
+        idSolicitud
+      );
+
+    if (deleteRequestError) {
+      return res.status(500).json({
+        error: 'Error eliminando solicitud'
+      });
+    }
+
+    return res.json({
+      message: 'Solicitud rechazada correctamente'
+    });
+
+  } catch (err) {
+
+    console.error(err);
+
+    return res.status(500).json({
+      error: 'Error interno del servidor'
+    });
+  }
+}
+
 module.exports = {
   getMe,
   updateMe,
@@ -313,5 +529,9 @@ module.exports = {
   getUsers,
   updateUser,
   deleteUser,
-  deleteUserImage
+  deleteUserImage,
+  createVerificationRequest,
+  getVerificationRequests,
+  approveVerificationRequest,
+  rejectVerificationRequest
 };

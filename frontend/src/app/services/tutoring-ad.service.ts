@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class TutoringAdService {
 
-  private apiUrl = 'https://tutorfast-api.onrender.com/api/tutoring-ads';
+  private apiUrl = 'http://localhost:3000/api/tutoring-ads';
 
   constructor(private http: HttpClient) {}
 

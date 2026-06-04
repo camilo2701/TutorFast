@@ -190,14 +190,7 @@ ion-grid {
   box-shadow: 0 8px 20px rgba(0,0,0,0.12);
 }
 
-/* IMAGEN */
-.image-placeholder {
-  width: 100%;
-  height: 120px;
-  border-radius: 10px;
-  overflow: hidden;
-  margin-bottom: 10px;
-}
+
 
 /* TEXTO */
 .price {
@@ -248,16 +241,16 @@ ion-grid {
 /* animación suave tipo "respiración" */
 /* animación SOLO premium */
 .premium-card {
-  animation: tutorGlow 1.5s infinite alternate;
+  animation: tutorGlow 0.5s infinite alternate;
   
 }
 
 @keyframes tutorGlow {
   from {
-    box-shadow: 0 0 4px rgba(24, 24, 23, 0.568);
+    box-shadow: 0 0 10px rgba(46, 44, 44, 0.808);
   }
   to {
-    box-shadow: 0 0 10px rgba(255, 140, 0, 0.925);
+    box-shadow: 0 0 20px rgb(255, 174, 0);
   }
 }
 
@@ -319,4 +312,37 @@ ion-grid {
 
 .tutor-card {
   cursor: pointer;
+}
+
+.tutor-image {
+  width: 100%;
+  height: 300px;
+  flex: 0 0 120px;
+  overflow: hidden;
+  border-radius: 10px;
+}
+.tutor-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.tutor-image2 {
+  width: 100%;
+  height: 150px;
+  overflow: hidden;
+  border-radius: 10px;
+}
+.tutor-image2 img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+
+
+ion-col {
+  display: flex;
 }

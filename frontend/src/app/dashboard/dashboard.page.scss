@@ -386,6 +386,72 @@
 }
 
 /* =========================
+   🔹 VERIFICACIÓN TUTOR
+========================= */
+
+.verification-status {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.verification-status h2 {
+  color: var(--ion-color-primary);
+}
+
+.success-text {
+  color: var(--ion-color-success);
+}
+
+.danger-text {
+  color: var(--ion-color-danger);
+}
+
+.verification-message {
+  text-align: center;
+  font-size: 16px;
+  margin-bottom: 24px;
+}
+
+.pdf-warning {
+  display: block;
+  text-align: center;
+  margin-top: 8px;
+  color: var(--ion-color-medium);
+}
+
+.verification-btn-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+/* TABLA ADMIN */
+
+.table-header.verification,
+.table-row.verification {
+  grid-template-columns:
+    70px
+    1.4fr
+    1.2fr
+    1.1fr
+    130px
+    140px
+    60px;
+}
+
+.verification-menu-popover::part(content) {
+  background: var(--ion-color-light);
+  border-radius: 6px;
+  padding: 6px;
+}
+
+.verification-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* =========================
    🔹 RESPONSIVE
 ========================= */
 

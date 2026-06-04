@@ -122,7 +122,7 @@
         class="featured-card small"
         (click)="goToTutorProfile(second?.id)">
         <div class="featured-rank"></div>
-        <div class="tutor-image">
+        <div class="tutor-image2">
           <img [src]="second?.pfpURL" />
         </div>
         <ion-card-content>
@@ -136,7 +136,7 @@
         class="featured-card big"
         (click)="goToTutorProfile(first?.id)">
         <div class="featured-rank" ></div>
-        <div class="tutor-image">
+        <div class="tutor-image2">
           <img [src]="first?.pfpURL" />
         </div>
         <ion-card-content>
@@ -150,7 +150,7 @@
         class="featured-card small"
         (click)="goToTutorProfile(third?.id)">
         <div class="featured-rank"></div>
-        <div class="tutor-image">
+        <div class="tutor-image2">
           <img [src]="third?.pfpURL" />
         </div>
         <ion-card-content>
@@ -177,7 +177,7 @@
 
             <ion-card
               class="tutor-card"
-              [ngClass]="{ 'premium-card': tutoria.premium }"
+              [ngClass]="{ 'premium-card': tutoria.premium  }"
               (click)="goToTutoringAd(tutoria.id)">
 
               <ion-card-content class="tutor-card-content">

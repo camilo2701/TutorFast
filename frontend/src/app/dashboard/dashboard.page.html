@@ -109,6 +109,17 @@
         <span>Gestionar Tutorías</span>
       </div>
 
+      <div
+        *ngIf="role === 1 || role === 2"
+        class="menu-item"
+        [class.active]="view === 'verification'"
+        (click)="setView('verification')">
+
+        <ion-icon name="shield-checkmark-outline"></ion-icon>
+        <span>Verificación Tutor</span>
+
+      </div>
+
       <div 
         *ngIf="role === 2"
         class="menu-item" 
@@ -156,7 +167,10 @@
 
             </div>
 
-            <input type="file" (change)="onImageUpload($event)">
+            <input
+              type="file"
+              accept=".pdf"
+              (change)="onFileSelected($event)">
 
           </div>
 
@@ -504,6 +518,234 @@
         </ng-container>
 
       </ion-card-content>
+    </ion-card>
+
+    <!-- =========================
+        ✔️ GESTIONAR VERIFICACIONES
+    ========================= -->
+    <ion-card
+      *ngIf="view==='verification' && role===1"
+      color="light">
+
+      <ion-card-content>
+
+        <div class="verification-status">
+
+          <h2 *ngIf="tutorVerified">
+            Estado de verificación para impartir tutorías:
+            <span class="success-text">Activado</span>
+
+            <ion-icon
+              color="success"
+              name="checkmark-circle-outline">
+            </ion-icon>
+          </h2>
+
+          <h2 *ngIf="!tutorVerified">
+            Estado de verificación para impartir tutorías:
+            <span class="danger-text">No Activado</span>
+
+            <ion-icon
+              color="danger"
+              name="close-circle-outline">
+            </ion-icon>
+          </h2>
+
+        </div>
+
+        <p *ngIf="tutorVerified" class="verification-message">
+          Actualmente estás habilitado para crear y publicar tutorías.
+        </p>
+
+        <div *ngIf="!tutorVerified">
+
+          <p class="verification-message">
+            Debes adjuntar un certificado de alumno regular emitido por tu universidad
+            para generar una solicitud de aprobación para impartir tutorías.
+          </p>
+
+          <ion-item color="light">
+            <ion-label>
+              Certificado de alumno regular (PDF)
+            </ion-label>
+
+            <input
+              type="file"
+              accept=".pdf,application/pdf"
+              (change)="onVerificationPdfSelected($event)">
+          </ion-item>
+
+          <small class="pdf-warning">
+            Solo se aceptan archivos PDF.
+          </small>
+
+          <div class="verification-btn-container">
+
+            <ion-button
+              color="tertiary"
+              [disabled]="!verificationPdf"
+              (click)="submitVerificationRequest()">
+
+              <ion-text color="light">
+                Enviar solicitud de verificación
+              </ion-text>
+
+            </ion-button>
+
+          </div>
+
+        </div>
+
+      </ion-card-content>
+
+    </ion-card>
+    
+    <ion-card
+      *ngIf="view==='verification' && role===2"
+      color="light">
+
+      <ion-card-content>
+
+        <h2 class="section-title">
+          Listado de solicitudes de verificación para tutores
+        </h2>
+
+        <div class="table-header verification">
+          <div>ID</div>
+          <div>Nombre</div>
+          <div>RUT</div>
+          <div>Teléfono</div>
+          <div>Documento</div>
+          <div>Fecha</div>
+          <div></div>
+        </div>
+
+        <div class="table-divider"></div>
+
+        <div class="table-body">
+
+          <div
+            *ngFor="let request of paginatedVerificationRequests"
+            class="table-row verification">
+
+            <div class="table-cell">
+              {{ request.id }}
+            </div>
+
+            <div class="table-cell">
+              {{ request.name }}
+            </div>
+
+            <div class="table-cell">
+              {{ request.rut }}
+            </div>
+
+            <div class="table-cell">
+              {{ request.phone }}
+            </div>
+
+            <div class="table-cell">
+
+              <ion-button
+                fill="clear"
+                color="primary"
+                [href]="request.document"
+                target="_blank">
+
+                <ion-icon
+                  slot="start"
+                  name="document-text-outline">
+                </ion-icon>
+
+                PDF
+
+              </ion-button>
+
+            </div>
+
+            <div class="table-cell">
+              {{ request.createdAt }}
+            </div>
+
+            <div class="table-cell">
+
+              <ion-button
+                fill="clear"
+                color="primary"
+                (click)="openVerificationMenu($event, request)">
+
+                <ion-icon
+                  name="ellipsis-vertical-outline">
+                </ion-icon>
+
+              </ion-button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <ion-popover
+          [isOpen]="isVerificationMenuOpen"
+          [event]="verificationMenuEvent"
+          (didDismiss)="closeVerificationMenu()"
+          class="verification-menu-popover">
+
+          <ng-template>
+
+            <div class="verification-menu">
+
+              <ion-button
+                color="success"
+                expand="block"
+                (click)="approveVerification()">
+
+                Aprobar
+
+              </ion-button>
+
+              <ion-button
+                color="danger"
+                expand="block"
+                (click)="rejectVerification()">
+
+                Rechazar
+
+              </ion-button>
+
+            </div>
+
+          </ng-template>
+
+        </ion-popover>
+
+        <div class="pagination">
+
+          <ion-button
+            (click)="prevVerificationPage()"
+            [disabled]="verificationPage===1">
+
+            Anterior
+
+          </ion-button>
+
+          <span>
+            Página {{ verificationPage }}
+          </span>
+
+          <ion-button
+            (click)="nextVerificationPage()"
+            [disabled]="!hasNextVerificationPage()">
+
+            Siguiente
+
+          </ion-button>
+
+        </div>
+
+      </ion-card-content>
+
     </ion-card>
 
     <!-- =========================

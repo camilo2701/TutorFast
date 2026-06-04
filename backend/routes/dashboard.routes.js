@@ -21,4 +21,11 @@ router.patch('/users/:id', verifyToken, DashboardController.updateUser);
 router.delete('/users/:id', verifyToken, DashboardController.deleteUser);
 router.patch('/users/:id/delete-image', verifyToken, DashboardController.deleteUserImage);
 
+router.post('/verification-request', verifyToken, upload.single('document'), DashboardController.createVerificationRequest);
+router.get('/verification-requests', verifyToken, DashboardController.getVerificationRequests);
+
+router.patch('/verification-requests/:id/approve', verifyToken, DashboardController.approveVerificationRequest);
+
+router.delete('/verification-requests/:id/reject', verifyToken, DashboardController.rejectVerificationRequest);
+
 module.exports = router;

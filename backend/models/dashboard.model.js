@@ -159,6 +159,50 @@ async function getAllUsers() {
     .select('id_usuario, rut, nombre_real, nombre_de_usuario, correo_electronico, rol, suscripcion, pfp');
 }
 
+async function getVerificationRequests() {
+  return await supabase
+    .from('solicitud_verificacion')
+    .select(`
+      id_solicitud,
+      fecha_creacion,
+      documento,
+      id_usuario,
+      usuario (
+        id_usuario,
+        nombre_real,
+        rut,
+        telefono
+      )
+    `)
+    .order('fecha_creacion', {
+      ascending: false
+    });
+}
+
+async function verifyTutor(idUsuario) {
+  return await supabase
+    .from('usuario')
+    .update({
+      'verificacion-tutor': true
+    })
+    .eq('id_usuario', idUsuario);
+}
+
+async function getVerificationRequestById(idSolicitud) {
+  return await supabase
+    .from('solicitud_verificacion')
+    .select('*')
+    .eq('id_solicitud', idSolicitud)
+    .single();
+}
+
+async function deleteVerificationRequest(idSolicitud) {
+  return await supabase
+    .from('solicitud_verificacion')
+    .delete()
+    .eq('id_solicitud', idSolicitud);
+}
+
 module.exports = {
   getUserById,
   updateUser,
@@ -172,5 +216,9 @@ module.exports = {
   getTutorAds,
   getBookingsByTutorAdIds,
   getAllAds,
-  getAllUsers
+  getAllUsers,
+  getVerificationRequests,
+  verifyTutor,
+  getVerificationRequestById,
+  deleteVerificationRequest
 };

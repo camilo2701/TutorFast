@@ -261,12 +261,18 @@
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
 
-
-
+.tutor-image {
+  width: 100%;
+  height: 300px;
+  
+  overflow: hidden;
+  border-radius: 10px;
+}
 .tutor-image img {
   width: 100%;
   height: 100%;
-  
+  object-fit: cover;
+  display: block;
 }
 
 .tutor-card-content {
@@ -274,6 +280,7 @@
   flex-direction: column;
   gap: 6px;
 }
+
 
 .profile-menu-popover::part(content) {
   background: transparent !important;

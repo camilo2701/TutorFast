@@ -22,7 +22,11 @@ import {
   imageOutline,
   star,
   starOutline,
-  trashBinOutline
+  trashBinOutline,
+  shieldCheckmarkOutline,
+  checkmarkCircleOutline,
+  closeCircleOutline,
+  documentTextOutline
 } from 'ionicons/icons';
 
 interface User {
@@ -72,7 +76,11 @@ export class DashboardPage implements OnInit {
       'image-outline': imageOutline,
       'star': star,
       'star-outline': starOutline,
-      'trash-bin-outline': trashBinOutline
+      'trash-bin-outline': trashBinOutline,
+      'shield-checkmark-outline': shieldCheckmarkOutline,
+      'checkmark-circle-outline': checkmarkCircleOutline,
+      'close-circle-outline': closeCircleOutline,
+      'document-text-outline': documentTextOutline,
     });
   }
 
@@ -88,6 +96,10 @@ export class DashboardPage implements OnInit {
   popoverEvent: Event | null = null;
 
   selectedImageFile: File | null = null;
+
+  selectedFile: File | null = null;
+
+  
 
   setView(v: string) {
     this.view = v;
@@ -767,12 +779,267 @@ export class DashboardPage implements OnInit {
   }
 
   /* =========================
+     🔹 VERIFICACION DE TUTORES
+  ========================= */
+
+  tutorVerified = false; // backend
+
+  verificationPdf: File | null = null;
+
+  /* ADMIN */
+
+  verificationRequests: any[] = [];
+  paginatedVerificationRequests: any[] = [];
+
+  verificationPage = 1;
+  verificationPageSize = 10;
+
+  isVerificationMenuOpen = false;
+  verificationMenuEvent: Event | null = null;
+  selectedVerificationRequest: any = null;
+  
+  // Selección PDF
+  onVerificationPdfSelected(event: any) {
+
+    const file = event.target.files[0];
+
+    if (!file) return;
+
+    if (file.type !== 'application/pdf') {
+
+      alert('Solo se aceptan archivos PDF.');
+      return;
+    }
+
+    this.verificationPdf = file;
+  }
+
+  // ENVIAR SOLICUTD
+  async submitVerificationRequest() {
+
+    if (!this.verificationPdf) {
+
+      const alert = await this.alertCtrl.create({
+        header: 'Error',
+        message: 'Debes seleccionar un archivo PDF.',
+        cssClass: 'custom-alert',
+        buttons: ['OK']
+      });
+
+      await alert.present();
+      return;
+    }
+
+    this.dashboardService
+      .sendVerificationRequest(this.verificationPdf)
+      .subscribe({
+
+        next: async () => {
+
+          const alert = await this.alertCtrl.create({
+            header: 'Éxito',
+            message: 'Solicitud de verificación enviada correctamente.',
+            cssClass: 'custom-alert',
+            buttons: ['OK']
+          });
+
+          await alert.present();
+
+          this.verificationPdf = null;
+        },
+
+        error: async (err) => {
+
+          console.error(err);
+
+          const alert = await this.alertCtrl.create({
+            header: 'Error',
+            message: err.error?.error || 'No se pudo enviar la solicitud.',
+            cssClass: 'custom-alert',
+            buttons: ['OK']
+          });
+
+          await alert.present();
+        }
+
+      });
+
+  }
+
+  //POPOVER ADMIN
+  openVerificationMenu(event: Event, request: any) {
+
+    this.verificationMenuEvent = event;
+    this.selectedVerificationRequest = request;
+    this.isVerificationMenuOpen = true;
+  }
+
+  closeVerificationMenu() {
+
+    this.isVerificationMenuOpen = false;
+    this.verificationMenuEvent = null;
+  }
+
+  // APROBAR SOLICITUD
+  async approveVerification() {
+
+    this.closeVerificationMenu();
+
+    const alert = await this.alertCtrl.create({
+      header: 'Confirmar',
+      message: '¿Aprobar esta solicitud?',
+      cssClass: 'custom-alert',
+      buttons: [
+        {
+          text: 'No',
+          role: 'cancel'
+        },
+        {
+          text: 'Sí',
+          handler: async () => {
+
+            try {
+
+              await this.dashboardService
+                .approveVerificationRequest(this.selectedVerificationRequest.id)
+                .toPromise();
+
+              await this.loadVerificationRequests();
+
+              const success = await this.alertCtrl.create({
+                header: 'Éxito',
+                message: 'Solicitud aprobada correctamente.',
+                cssClass: 'custom-alert',
+                buttons: ['OK']
+              });
+
+              await success.present();
+
+            } catch (error) {
+
+              console.error(error);
+
+              const fail = await this.alertCtrl.create({
+                header: 'Error',
+                message: 'No se pudo aprobar la solicitud.',
+                cssClass: 'custom-alert',
+                buttons: ['OK']
+              });
+
+              await fail.present();
+            }
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+
+  // RECHAZAR SOLICITUD
+  async rejectVerification() {
+
+    this.closeVerificationMenu();
+
+    const alert = await this.alertCtrl.create({
+      header: 'Confirmar',
+      message: '¿Rechazar esta solicitud?',
+      cssClass: 'custom-alert',
+      buttons: [
+        {
+          text: 'No',
+          role: 'cancel'
+        },
+        {
+          text: 'Sí',
+          handler: async () => {
+
+            try {
+
+              await this.dashboardService
+                .rejectVerificationRequest(this.selectedVerificationRequest.id)
+                .toPromise();
+
+              await this.loadVerificationRequests();
+
+              const success = await this.alertCtrl.create({
+                header: 'Éxito',
+                message: 'Solicitud rechazada correctamente.',
+                cssClass: 'custom-alert',
+                buttons: ['OK']
+              });
+
+              await success.present();
+
+            } catch (error) {
+
+              console.error(error);
+
+              const fail = await this.alertCtrl.create({
+                header: 'Error',
+                message: 'No se pudo rechazar la solicitud.',
+                cssClass: 'custom-alert',
+                buttons: ['OK']
+              });
+
+              await fail.present();
+            }
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+  // PAGINACION
+  hasNextVerificationPage(): boolean {
+    return this.verificationPage <
+      Math.ceil(
+        this.verificationRequests.length /
+        this.verificationPageSize
+      );
+  }
+
+  updateVerificationPagination() {
+
+    const start =
+      (this.verificationPage - 1) *
+      this.verificationPageSize;
+
+    this.paginatedVerificationRequests =
+      this.verificationRequests.slice(
+        start,
+        start + this.verificationPageSize
+      );
+  }
+
+  nextVerificationPage() {
+
+    if (!this.hasNextVerificationPage()) return;
+
+    this.verificationPage++;
+    this.updateVerificationPagination();
+  }
+
+  prevVerificationPage() {
+
+    if (this.verificationPage > 1) {
+
+      this.verificationPage--;
+      this.updateVerificationPagination();
+    }
+  }  
+
+  /* =========================
      🔹 INIT
   ========================= */
   
   ngOnInit() {
       this.checkSession();
       this.loadDashboard();
+      this.loadVerificationRequests();
       const updated = localStorage.getItem('profileUpdated');
 
   if (updated) {
@@ -843,4 +1110,55 @@ export class DashboardPage implements OnInit {
   goToUserProfile(id: number) {
     this.router.navigate(['/user-profile', id]);
   }
+
+  submitVerification() {
+
+    if (!this.selectedFile) {
+      return;
+    }
+
+    this.dashboardService
+      .sendVerificationRequest(this.selectedFile)
+      .subscribe({
+        next: () => {
+          alert('Solicitud enviada correctamente');
+        },
+        error: (err) => {
+          alert(err.error.error);
+        }
+      });
+  }
+
+  onFileSelected(event: any) {
+
+    const file = event.target.files?.[0];
+
+    if (file) {
+      this.selectedFile = file;
+    }
+
+  }
+
+  loadVerificationRequests() {
+    this.dashboardService.getVerificationRequests().subscribe({
+      next: (data) => {
+
+        console.log('SOLICITUDES:', data);
+
+        this.verificationRequests = data;
+
+        this.verificationPage = 1;
+
+        this.updateVerificationPagination();
+      },
+      error: (err) => {
+        console.error(err);
+
+        this.verificationRequests = [];
+        this.paginatedVerificationRequests = [];
+      }
+    });
+  }
+
+  
 }

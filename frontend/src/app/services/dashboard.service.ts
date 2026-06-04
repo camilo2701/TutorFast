@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class DashboardService {
 
-  private apiUrl = 'https://tutorfast-api.onrender.com/api/dashboard';
+  private apiUrl = 'http://localhost:3000/api/dashboard';
 
   constructor(private http: HttpClient) {}
 
@@ -59,5 +59,40 @@ export class DashboardService {
 
   deleteUserImage(id: number): Observable<any> {
     return this.http.patch<any>(`${this.apiUrl}/users/${id}/delete-image`, {}, this.headers());
+  }
+
+  sendVerificationRequest(file: File) {
+
+    const formData = new FormData();
+
+    formData.append('document', file);
+
+    return this.http.post(
+      `${this.apiUrl}/verification-request`,
+      formData,
+      this.headers()
+    );
+  }
+
+  getVerificationRequests() {
+    return this.http.get<any[]>(
+      `${this.apiUrl}/verification-requests`,
+      this.headers()
+    );
+  }
+
+  approveVerificationRequest(id: number) {
+    return this.http.patch(
+      `${this.apiUrl}/verification-requests/${id}/approve`,
+      {},
+      this.headers()
+    );
+  }
+
+  rejectVerificationRequest(id: number) {
+    return this.http.delete(
+      `${this.apiUrl}/verification-requests/${id}/reject`,
+      this.headers()
+    );
   }
 }
