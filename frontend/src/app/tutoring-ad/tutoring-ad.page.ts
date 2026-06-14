@@ -227,10 +227,24 @@ export class TutoringAdPage implements OnInit {
     };
 
     this.tutoringAdService.confirmTutoria(payload).subscribe({
-      next: () => {
-        alert('Tutoría confirmada correctamente.');
-        this.hasBookedThisTutor = true;
-        this.closeBooking();
+      next: async () => {
+        const paymentAlert = await this.alertCtrl.create({
+          header: 'Para confirmar la tutoría deberás ingresar el monto total designado por el tutor',
+          message: 'Haz click en OK para continuar al pago',
+          cssClass: 'custom-alert',
+          buttons: [
+            {
+              text: 'OK',
+              handler: () => {
+                this.hasBookedThisTutor = true;
+                this.closeBooking();
+                window.location.href = 'https://link.mercadopago.cl/tutorfast';
+              }
+            }
+          ]
+        });
+
+        await paymentAlert.present();
       },
       error: (error) => {
         alert(error.error?.error || 'Error al confirmar tutoría.');
